@@ -9,6 +9,8 @@ def fill_numeric(df: pd.DataFrame, strategy: str):
 
     numeric = df.select_dtypes(include="number").columns
 
+    fill_values = {}
+
     for col in numeric:
 
         if strategy == "Mean":
@@ -17,7 +19,10 @@ def fill_numeric(df: pd.DataFrame, strategy: str):
         else:
             value = df[col].median()
 
-        df[col] = df[col].fillna(value)
+        fill_values[col] = value
+
+    if fill_values:
+        df = df.fillna(value=fill_values)
 
     return df
 
@@ -26,13 +31,17 @@ def fill_categorical(df: pd.DataFrame):
 
     categorical = df.select_dtypes(exclude="number").columns
 
+    fill_values = {}
+
     for col in categorical:
 
-        if not df[col].mode().empty:
+        mode = df[col].mode()
 
-            df[col] = df[col].fillna(
-                df[col].mode()[0]
-            )
+        if not mode.empty:
+            fill_values[col] = mode[0]
+
+    if fill_values:
+        df = df.fillna(value=fill_values)
 
     return df
 

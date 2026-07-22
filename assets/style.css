@@ -42,20 +42,42 @@ section[data-testid="stSidebar"] * {
     color: #E9E4FF !important;
 }
 
-/* Radio nav pills */
-section[data-testid="stSidebar"] div[role="radiogroup"] label {
-    background: rgba(168, 85, 247, 0.06);
-    border: 1px solid rgba(168, 85, 247, 0.18);
-    padding: 8px 14px;
-    border-radius: 12px;
-    margin-bottom: 6px;
-    transition: all 0.2s ease-in-out;
-    width: 100%;
+/* Nav list — flush, full-width rows (YouTube-style) */
+section[data-testid="stSidebar"] div[role="radiogroup"] {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
+
+section[data-testid="stSidebar"] div[role="radiogroup"] label {
+    background: transparent;
+    border: none;
+    border-left: 3px solid transparent;
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin: 0;
+    width: 100%;
+    transition: background 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
 section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-    background: rgba(168, 85, 247, 0.18);
-    border-color: #A855F7;
-    transform: translateX(3px);
+    background: rgba(168, 85, 247, 0.10);
+}
+
+/* Hide the default circular radio marker so it reads as a nav item, not a form field */
+section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child {
+    display: none;
+}
+
+/* Highlight the selected row full-width, like an active nav item */
+section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
+    background: linear-gradient(90deg, rgba(168,85,247,0.30), rgba(168,85,247,0.06));
+    border-left: 3px solid #A855F7;
+}
+
+section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) p {
+    color: #F3F0FF !important;
+    font-weight: 600;
 }
 
 /* ---------- Buttons ---------- */
