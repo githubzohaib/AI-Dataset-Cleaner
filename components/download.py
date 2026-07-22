@@ -1,0 +1,45 @@
+import io
+
+import pandas as pd
+import streamlit as st
+
+
+def to_csv_bytes(df: pd.DataFrame) -> bytes:
+
+    return df.to_csv(index=False).encode("utf-8")
+
+
+def to_excel_bytes(df: pd.DataFrame) -> bytes:
+
+    buffer = io.BytesIO()
+
+    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="Cleaned Data")
+
+    return buffer.getvalue()
+
+
+def download_buttons(df: pd.DataFrame, file_stem: str = "cleaned_dataset"):
+    """Render CSV + Excel download buttons side by side for a dataframe."""
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.download_button(
+            label="⬇️ Download as CSV",
+            data=to_csv_bytes(df),
+            file_name=f"{file_stem}.csv",
+            mime="text/csv",
+            width='stretch',
+        )
+
+    with col2:
+
+        st.download_button(
+            label="⬇️ Download as Excel",
+            data=to_excel_bytes(df),
+            file_name=f"{file_stem}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            width='stretch',
+        )
