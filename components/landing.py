@@ -10,6 +10,52 @@ FEATURES = [
     ("⬇️", "One-Click Export", "Download your cleaned dataset as CSV or Excel, ready to use."),
 ]
 
+WHY_ITEMS = [
+    ("01", "Your Data Stays Yours", "Everything runs in your session — nothing is stored or shared."),
+    ("02", "Enterprise-Grade Cleaning", "Isolation Forest and statistical imputation, not just find-and-replace."),
+    ("03", "See Before You Trust", "Full before/after comparison so you know exactly what changed."),
+    ("04", "Export Anywhere", "One click to CSV or Excel — ready for your next tool."),
+]
+
+ORB_SVG = """
+<svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="orbGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EC4899" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#EC4899" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="orbBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B2E63"/>
+      <stop offset="55%" stop-color="#221B3D"/>
+      <stop offset="100%" stop-color="#120E22"/>
+    </linearGradient>
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#F9A8D4"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </radialGradient>
+    <filter id="blurSoft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+
+  <circle cx="160" cy="170" r="140" fill="url(#orbGlow)" filter="url(#blurSoft)"/>
+
+  <rect x="70" y="90" width="180" height="160" rx="46" fill="url(#orbBody)" stroke="#A855F7" stroke-opacity="0.35"/>
+
+  <circle cx="120" cy="165" r="20" fill="url(#eyeGlow)"/>
+  <circle cx="200" cy="165" r="20" fill="url(#eyeGlow)"/>
+
+  <path d="M120 210 Q160 230 200 210" stroke="#EC4899" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+  <line x1="160" y1="90" x2="160" y2="65" stroke="#A855F7" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="160" cy="58" r="7" fill="#EC4899"/>
+
+  <rect x="55" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#A855F7" stroke-opacity="0.35"/>
+  <rect x="251" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#A855F7" stroke-opacity="0.35"/>
+</svg>
+"""
+
 
 def _inject_landing_css():
 
@@ -170,6 +216,87 @@ def show_landing():
     )
 
     st.markdown("<br>", unsafe_allow_html=True)
+
+    # ---- Why Choose section: numbered offset cards + orb illustration ----
+    left_col, mid_col, right_col = st.columns([1, 1, 1])
+
+    with left_col:
+
+        for num, title, desc in [WHY_ITEMS[0]]:
+            st.markdown(
+                f"""
+                <div class="why-card">
+                    <span class="why-num">{num}</span>
+                    <div class="why-title">{title}</div>
+                    <div class="why-desc">{desc}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        st.markdown('<div class="why-col-offset">', unsafe_allow_html=True)
+
+        for num, title, desc in [WHY_ITEMS[2]]:
+            st.markdown(
+                f"""
+                <div class="why-card">
+                    <span class="why-num">{num}</span>
+                    <div class="why-title">{title}</div>
+                    <div class="why-desc">{desc}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with mid_col:
+
+        st.markdown(
+            f"""
+            <div class="orb-wrap">
+                <div class="orb-float" style="width:220px;">{ORB_SVG}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    with right_col:
+
+        st.markdown(
+            """
+            <div style="text-align:right;">
+                <div class="why-heading">Why Choose<br>AI Dataset<br>Cleaner?</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        for num, title, desc in [WHY_ITEMS[1]]:
+            st.markdown(
+                f"""
+                <div class="why-card">
+                    <span class="why-num">{num}</span>
+                    <div class="why-title">{title}</div>
+                    <div class="why-desc">{desc}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        for num, title, desc in [WHY_ITEMS[3]]:
+            st.markdown(
+                f"""
+                <div class="why-card">
+                    <span class="why-num">{num}</span>
+                    <div class="why-title">{title}</div>
+                    <div class="why-desc">{desc}</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
     # ---- Feature grid ----
     cols = st.columns(3)

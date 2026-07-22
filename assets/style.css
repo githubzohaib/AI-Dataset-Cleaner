@@ -6,8 +6,25 @@ html, body, [class*="css"] {
 
 /* ---------- App background ---------- */
 .stApp {
-    background: radial-gradient(circle at 15% 0%, #241a4a 0%, #0D0B1E 45%, #0a0817 100%);
+    background: radial-gradient(circle at 15% 0%, rgba(88,28,135,0.30) 0%, rgba(10,9,20,1) 45%, #05040A 100%);
     background-attachment: fixed;
+}
+
+/* ---------- Corner glow accent (reusable on any card) ---------- */
+.glass-card, .feature-card, .why-card {
+    position: relative;
+    overflow: hidden;
+}
+.glass-card::after, .feature-card::after, .why-card::after {
+    content: "";
+    position: absolute;
+    top: -45%;
+    right: -35%;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, rgba(236, 72, 153, 0) 70%);
+    filter: blur(6px);
+    pointer-events: none;
 }
 
 /* ---------- Scrollbar ---------- */
@@ -197,3 +214,62 @@ section[data-testid="stFileUploaderDropzone"] {
     margin-right: 6px;
 }
 .chip-purple { background: rgba(168,85,247,0.18); color:#D8B4FE; border:1px solid rgba(168,85,247,0.4); }
+
+/* ---------- Why Choose section (numbered offset cards + orb) ---------- */
+.why-heading {
+    font-size: 40px;
+    font-weight: 800;
+    color: #F8FAFC;
+    line-height: 1.15;
+    margin-bottom: 6px;
+}
+.why-subheading {
+    color: #B9AEDD;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+.why-card {
+    background: linear-gradient(160deg, rgba(236,72,153,0.08) 0%, rgba(20,16,43,0.55) 55%);
+    border: 1px solid rgba(236,72,153,0.25);
+    border-radius: 18px;
+    padding: 26px 22px;
+    margin-bottom: 22px;
+}
+.why-num {
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #F472B6, #EC4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 12px;
+}
+.why-title {
+    color: #F3F0FF;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+.why-desc {
+    color: #B9AEDD;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+.why-col-offset {
+    margin-top: 46px;
+}
+.orb-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+.orb-float {
+    animation: orb-float-anim 4.5s ease-in-out infinite;
+}
+@keyframes orb-float-anim {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-16px); }
+    100% { transform: translateY(0px); }
+}
