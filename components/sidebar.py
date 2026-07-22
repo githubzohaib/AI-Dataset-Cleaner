@@ -76,6 +76,14 @@ def sidebar():
 
     st.sidebar.divider()
 
+    if st.sidebar.button("← Back to Landing", width='stretch'):
+
+        st.session_state["show_landing"] = True
+
+        st.rerun()
+
+    st.sidebar.divider()
+
     st.sidebar.caption("Version 2.0 · Purple AI Edition")
 
     st.sidebar.caption("Made with 💜 using Streamlit")

@@ -9,6 +9,7 @@ from config.settings import (
 
 from components.sidebar import sidebar
 from components.home import show_home
+from components.landing import show_landing
 
 # ----------------------------
 # Session State Initialization
@@ -22,6 +23,9 @@ if "original_dataset" not in st.session_state:
 
 if "cleaning_report" not in st.session_state:
     st.session_state["cleaning_report"] = []
+
+if "show_landing" not in st.session_state:
+    st.session_state["show_landing"] = True
 
 # ----------------------------
 # Page Config
@@ -55,32 +59,42 @@ except FileNotFoundError:
     pass
 
 # ----------------------------
-# Sidebar Navigation
+# Landing Page Gate
 # ----------------------------
 
-page = sidebar()
+if st.session_state["show_landing"]:
 
-# ----------------------------
-# Route Pages
-# ----------------------------
+    show_landing()
 
-ROUTES = {
-    "home": ("components.home", "show_home"),
-    "overview": ("views.overview", "show_page"),
-    "explorer": ("views.explorer", "show_page"),
-    "missing": ("views.missing", "show_page"),
-    "duplicates": ("views.duplicates", "show_page"),
-    "outliers": ("views.outliers", "show_page"),
-    "cleaning": ("views.cleaning", "show_page"),
-    "visualization": ("views.visualization", "show_page"),
-    "insights": ("views.insights", "show_page"),
-    "export": ("views.export", "show_page"),
-}
-
-module_name, function_name = ROUTES[page]
-
-if page == "home":
-    show_home()
 else:
-    module = __import__(module_name, fromlist=[function_name])
-    getattr(module, function_name)()
+
+    # ----------------------------
+    # Sidebar Navigation
+    # ----------------------------
+
+    page = sidebar()
+
+    # ----------------------------
+    # Route Pages
+    # ----------------------------
+
+    ROUTES = {
+        "home": ("components.home", "show_home"),
+        "overview": ("views.overview", "show_page"),
+        "explorer": ("views.explorer", "show_page"),
+        "missing": ("views.missing", "show_page"),
+        "duplicates": ("views.duplicates", "show_page"),
+        "outliers": ("views.outliers", "show_page"),
+        "cleaning": ("views.cleaning", "show_page"),
+        "visualization": ("views.visualization", "show_page"),
+        "insights": ("views.insights", "show_page"),
+        "export": ("views.export", "show_page"),
+    }
+
+    module_name, function_name = ROUTES[page]
+
+    if page == "home":
+        show_home()
+    else:
+        module = __import__(module_name, fromlist=[function_name])
+        getattr(module, function_name)()
