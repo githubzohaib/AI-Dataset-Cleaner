@@ -5,7 +5,7 @@ Visualization utilities.
 import pandas as pd
 import plotly.express as px
 
-PURPLE_SCALE = ["#3B1D6E", "#6D28D9", "#A855F7", "#D8B4FE", "#F5D0FE"]
+PINK_SCALE = ["#4A0E2E", "#BE185D", "#EC4899", "#F9A8D4", "#F5D0FE"]
 
 
 def histogram(df, column):
@@ -15,7 +15,7 @@ def histogram(df, column):
         x=column,
         title=f"{column} Distribution",
         marginal="box",
-        color_discrete_sequence=["#A855F7"],
+        color_discrete_sequence=["#EC4899"],
     )
 
 
@@ -25,7 +25,7 @@ def box_plot(df, column):
         df,
         y=column,
         title=f"{column} Box Plot",
-        color_discrete_sequence=["#C084FC"],
+        color_discrete_sequence=["#F472B6"],
     )
 
 
@@ -45,7 +45,7 @@ def bar_chart(df, column):
         y="Count",
         title=f"{column} Distribution",
         color="Count",
-        color_continuous_scale=PURPLE_SCALE,
+        color_continuous_scale=PINK_SCALE,
     )
 
 
@@ -60,5 +60,5 @@ def correlation_heatmap(df):
         text_auto=True,
         aspect="auto",
         title="Correlation Heatmap",
-        color_continuous_scale=PURPLE_SCALE,
+        color_continuous_scale=PINK_SCALE,
     )

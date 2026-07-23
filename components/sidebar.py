@@ -22,7 +22,7 @@ def sidebar():
     st.sidebar.markdown(
         """
         <h2 class="gradient-text" style="margin-bottom:0;">🧠 AI Cleaner</h2>
-        <p style="color:#A78BFA; font-size:13px; margin-top:-4px;">
+        <p style="color:#F4A8CB; font-size:13px; margin-top:-4px;">
             AI Powered Data Cleaning Platform
         </p>
         """,
@@ -64,8 +64,8 @@ def sidebar():
 
         st.sidebar.markdown(
             f"""
-            <span class="chip chip-purple">Rows: {len(df):,}</span>
-            <span class="chip chip-purple">Cols: {df.shape[1]}</span>
+            <span class="chip chip-pink">Rows: {len(df):,}</span>
+            <span class="chip chip-pink">Cols: {df.shape[1]}</span>
             """,
             unsafe_allow_html=True,
         )

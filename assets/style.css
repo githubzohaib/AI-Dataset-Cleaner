@@ -6,7 +6,7 @@ html, body, [class*="css"] {
 
 /* ---------- App background ---------- */
 .stApp {
-    background: radial-gradient(circle at 15% 0%, rgba(88,28,135,0.30) 0%, rgba(10,9,20,1) 45%, #05040A 100%);
+    background: radial-gradient(circle at 15% 0%, rgba(157,23,77,0.28) 0%, rgba(10,9,20,1) 45%, #05040A 100%);
     background-attachment: fixed;
 }
 
@@ -31,10 +31,10 @@ html, body, [class*="css"] {
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #14102b; }
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #A855F7, #6D28D9);
+    background: linear-gradient(180deg, #EC4899, #BE185D);
     border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover { background: #C084FC; }
+::-webkit-scrollbar-thumb:hover { background: #F472B6; }
 
 /* ---------- Headings ---------- */
 h1, h2, h3 {
@@ -43,7 +43,7 @@ h1, h2, h3 {
 }
 
 .gradient-text {
-    background: linear-gradient(90deg, #C084FC 0%, #A855F7 40%, #7C3AED 100%);
+    background: linear-gradient(90deg, #F472B6 0%, #EC4899 40%, #DB2777 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -53,7 +53,7 @@ h1, h2, h3 {
 /* ---------- Sidebar ---------- */
 section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #14102b 0%, #0D0B1E 100%);
-    border-right: 1px solid rgba(168, 85, 247, 0.25);
+    border-right: 1px solid rgba(236, 72, 153, 0.25);
 }
 section[data-testid="stSidebar"] * {
     color: #E9E4FF !important;
@@ -78,7 +78,7 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label {
 }
 
 section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-    background: rgba(168, 85, 247, 0.10);
+    background: rgba(236, 72, 153, 0.10);
 }
 
 /* Hide the default circular radio marker so it reads as a nav item, not a form field */
@@ -88,8 +88,8 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label > div:first-child 
 
 /* Highlight the selected row full-width, like an active nav item */
 section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
-    background: linear-gradient(90deg, rgba(168,85,247,0.30), rgba(168,85,247,0.06));
-    border-left: 3px solid #A855F7;
+    background: linear-gradient(90deg, rgba(236,72,153,0.30), rgba(236,72,153,0.06));
+    border-left: 3px solid #EC4899;
 }
 
 section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) p {
@@ -99,18 +99,18 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked)
 
 /* ---------- Buttons ---------- */
 .stButton > button, .stDownloadButton > button {
-    background: linear-gradient(135deg, #7C3AED 0%, #A855F7 60%, #C084FC 100%);
+    background: linear-gradient(135deg, #DB2777 0%, #EC4899 60%, #F472B6 100%);
     color: #ffffff !important;
     border: none;
     border-radius: 12px;
     padding: 0.6rem 1.2rem;
     font-weight: 600;
-    box-shadow: 0 4px 18px rgba(168, 85, 247, 0.35);
+    box-shadow: 0 4px 18px rgba(236, 72, 153, 0.35);
     transition: all 0.2s ease-in-out;
 }
 .stButton > button:hover, .stDownloadButton > button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 26px rgba(168, 85, 247, 0.55);
+    box-shadow: 0 8px 26px rgba(236, 72, 153, 0.55);
     filter: brightness(1.08);
 }
 .stButton > button:active, .stDownloadButton > button:active {
@@ -122,7 +122,7 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked)
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(236, 72, 153, 0.25);
     border-radius: 18px;
     padding: 22px 20px;
     text-align: center;
@@ -131,22 +131,22 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked)
 }
 .glass-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 14px 38px rgba(168, 85, 247, 0.35);
-    border-color: rgba(196, 132, 252, 0.6);
+    box-shadow: 0 14px 38px rgba(236, 72, 153, 0.35);
+    border-color: rgba(244, 114, 182, 0.6);
 }
 .glass-card h4 {
     margin: 0 0 6px 0;
     font-size: 13px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #C4B5FD !important;
+    color: #F4A8CB !important;
     font-weight: 600;
 }
 .glass-card h2 {
     margin: 0;
     font-size: 30px;
     font-weight: 800;
-    background: linear-gradient(90deg, #F3F0FF, #C4B5FD);
+    background: linear-gradient(90deg, #F3F0FF, #F4A8CB);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -155,16 +155,16 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked)
 /* ---------- Metric widgets ---------- */
 div[data-testid="stMetric"] {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(168, 85, 247, 0.2);
+    border: 1px solid rgba(236, 72, 153, 0.2);
     border-radius: 14px;
     padding: 12px 14px;
 }
-div[data-testid="stMetricLabel"] { color: #C4B5FD !important; }
+div[data-testid="stMetricLabel"] { color: #F4A8CB !important; }
 div[data-testid="stMetricValue"] { color: #F3F0FF !important; font-weight: 700; }
 
 /* ---------- DataFrames / tables ---------- */
 div[data-testid="stDataFrame"] {
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(236, 72, 153, 0.25);
     border-radius: 14px;
     overflow: hidden;
 }
@@ -172,35 +172,35 @@ div[data-testid="stDataFrame"] {
 /* ---------- Alerts ---------- */
 div[data-testid="stAlert"] {
     border-radius: 14px;
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    border: 1px solid rgba(236, 72, 153, 0.25);
 }
 
 /* ---------- Inputs ---------- */
 .stTextInput input, .stSelectbox div[data-baseweb="select"], .stNumberInput input {
     background-color: rgba(255,255,255,0.04) !important;
     border-radius: 10px !important;
-    border: 1px solid rgba(168, 85, 247, 0.3) !important;
+    border: 1px solid rgba(236, 72, 153, 0.3) !important;
     color: #F3F0FF !important;
 }
 
 /* ---------- Tabs ---------- */
 button[data-baseweb="tab"] {
     border-radius: 10px 10px 0 0;
-    color: #C4B5FD;
+    color: #F4A8CB;
 }
 button[data-baseweb="tab"][aria-selected="true"] {
-    background: rgba(168, 85, 247, 0.15);
+    background: rgba(236, 72, 153, 0.15);
     color: #F3F0FF;
-    border-bottom: 3px solid #A855F7;
+    border-bottom: 3px solid #EC4899;
 }
 
 /* ---------- Divider ---------- */
-hr { border-color: rgba(168, 85, 247, 0.25) !important; }
+hr { border-color: rgba(236, 72, 153, 0.25) !important; }
 
 /* ---------- File uploader ---------- */
 section[data-testid="stFileUploaderDropzone"] {
-    background: rgba(168, 85, 247, 0.06);
-    border: 1.5px dashed rgba(168, 85, 247, 0.5) !important;
+    background: rgba(236, 72, 153, 0.06);
+    border: 1.5px dashed rgba(236, 72, 153, 0.5) !important;
     border-radius: 14px;
 }
 
@@ -213,7 +213,7 @@ section[data-testid="stFileUploaderDropzone"] {
     font-weight: 600;
     margin-right: 6px;
 }
-.chip-purple { background: rgba(168,85,247,0.18); color:#D8B4FE; border:1px solid rgba(168,85,247,0.4); }
+.chip-pink { background: rgba(236,72,153,0.18); color:#F9A8D4; border:1px solid rgba(236,72,153,0.4); }
 
 /* ---------- Why Choose section (numbered offset cards + orb) ---------- */
 .why-heading {

@@ -86,7 +86,7 @@ def missing_bar_chart(summary: pd.DataFrame):
         color="Missing Percentage",
         title="Missing Values (%)",
         text="Missing Percentage",
-        color_continuous_scale=["#3B1D6E", "#A855F7", "#F0ABFC"],
+        color_continuous_scale=["#4A0E2E", "#EC4899", "#FBCFE8"],
     )
 
     fig.update_layout(
@@ -102,7 +102,7 @@ def missing_heatmap(df: pd.DataFrame):
     fig = px.imshow(
         df.isnull(),
         aspect="auto",
-        color_continuous_scale=["#171233", "#A855F7"],
+        color_continuous_scale=["#170A12", "#EC4899"],
         title="Missing Value Heatmap",
     )
 

@@ -9,7 +9,7 @@ def show_home():
     st.markdown(
         """
         <h1 class="gradient-text">🧠 AI Dataset Cleaner</h1>
-        <p style="color:#C4B5FD; font-size:16px; margin-top:-10px;">
+        <p style="color:#F4A8CB; font-size:16px; margin-top:-10px;">
             AI-Powered Dataset Cleaning &amp; Preprocessing Platform
         </p>
         """,

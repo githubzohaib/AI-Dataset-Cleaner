@@ -41,18 +41,18 @@ ORB_SVG = """
 
   <circle cx="160" cy="170" r="140" fill="url(#orbGlow)" filter="url(#blurSoft)"/>
 
-  <rect x="70" y="90" width="180" height="160" rx="46" fill="url(#orbBody)" stroke="#A855F7" stroke-opacity="0.35"/>
+  <rect x="70" y="90" width="180" height="160" rx="46" fill="url(#orbBody)" stroke="#EC4899" stroke-opacity="0.35"/>
 
   <circle cx="120" cy="165" r="20" fill="url(#eyeGlow)"/>
   <circle cx="200" cy="165" r="20" fill="url(#eyeGlow)"/>
 
   <path d="M120 210 Q160 230 200 210" stroke="#EC4899" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
 
-  <line x1="160" y1="90" x2="160" y2="65" stroke="#A855F7" stroke-width="3" stroke-linecap="round"/>
+  <line x1="160" y1="90" x2="160" y2="65" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>
   <circle cx="160" cy="58" r="7" fill="#EC4899"/>
 
-  <rect x="55" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#A855F7" stroke-opacity="0.35"/>
-  <rect x="251" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#A855F7" stroke-opacity="0.35"/>
+  <rect x="55" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#EC4899" stroke-opacity="0.35"/>
+  <rect x="251" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#EC4899" stroke-opacity="0.35"/>
 </svg>
 """
 
@@ -70,9 +70,9 @@ def _inject_landing_css():
             display: inline-block;
             padding: 6px 18px;
             border-radius: 999px;
-            background: rgba(168, 85, 247, 0.12);
-            border: 1px solid rgba(168, 85, 247, 0.4);
-            color: #D8B4FE;
+            background: rgba(236, 72, 153, 0.12);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            color: #F9A8D4;
             font-size: 13px;
             font-weight: 600;
             letter-spacing: 0.5px;
@@ -82,7 +82,7 @@ def _inject_landing_css():
             font-size: 56px;
             font-weight: 800;
             line-height: 1.1;
-            background: linear-gradient(90deg, #F3F0FF 0%, #C084FC 45%, #7C3AED 100%);
+            background: linear-gradient(90deg, #F3F0FF 0%, #F472B6 45%, #DB2777 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -90,7 +90,7 @@ def _inject_landing_css():
         }
         .landing-subtitle {
             font-size: 19px;
-            color: #C4B5FD;
+            color: #F4A8CB;
             max-width: 650px;
             margin: 0 auto 10px auto;
             font-weight: 400;
@@ -102,14 +102,14 @@ def _inject_landing_css():
             transform: translateX(-50%);
             width: 700px;
             height: 700px;
-            background: radial-gradient(circle, rgba(168,85,247,0.35) 0%, rgba(168,85,247,0) 70%);
+            background: radial-gradient(circle, rgba(236,72,153,0.35) 0%, rgba(236,72,153,0) 70%);
             z-index: -1;
             pointer-events: none;
         }
         .feature-card {
             background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(14px);
-            border: 1px solid rgba(168, 85, 247, 0.22);
+            border: 1px solid rgba(236, 72, 153, 0.22);
             border-radius: 18px;
             padding: 26px 22px;
             height: 100%;
@@ -117,8 +117,8 @@ def _inject_landing_css():
         }
         .feature-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 14px 34px rgba(168, 85, 247, 0.3);
-            border-color: rgba(196, 132, 252, 0.6);
+            box-shadow: 0 14px 34px rgba(236, 72, 153, 0.3);
+            border-color: rgba(244, 114, 182, 0.6);
         }
         .feature-icon {
             font-size: 30px;
@@ -146,7 +146,7 @@ def _inject_landing_css():
             display: flex;
             align-items: center;
             gap: 10px;
-            color: #D8B4FE;
+            color: #F9A8D4;
             font-size: 14px;
             font-weight: 600;
         }
@@ -154,7 +154,7 @@ def _inject_landing_css():
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #7C3AED, #C084FC);
+            background: linear-gradient(135deg, #DB2777, #F472B6);
             color: white;
             display: flex;
             align-items: center;
