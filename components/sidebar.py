@@ -36,15 +36,26 @@ def sidebar():
         type=["csv"],
     )
 
-    if uploaded:
+    if uploaded is not None:
 
-        df = load_dataset(uploaded)
+        # Streamlit's file_uploader keeps returning the SAME file object on every
+        # rerun (button clicks, checkbox toggles, st.rerun() after cleaning, etc.),
+        # not just the moment it's uploaded. Without this guard, every rerun would
+        # silently reload the original file and wipe out any cleaning that was
+        # just applied. We only (re)load when the file is actually new.
+        file_fingerprint = f"{uploaded.name}_{uploaded.size}"
 
-        st.session_state["dataset"] = df
+        if st.session_state.get("uploaded_file_fingerprint") != file_fingerprint:
 
-        if st.session_state["original_dataset"] is None:
+            df = load_dataset(uploaded)
+
+            st.session_state["dataset"] = df
 
             st.session_state["original_dataset"] = df.copy()
+
+            st.session_state["cleaning_report"] = []
+
+            st.session_state["uploaded_file_fingerprint"] = file_fingerprint
 
     st.sidebar.divider()
 

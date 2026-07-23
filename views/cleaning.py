@@ -53,22 +53,35 @@ def show_page():
             type="primary",
         ):
 
-            service = CleaningService()
+            with st.status("🧹 Cleaning your dataset...", expanded=True) as status:
 
-            cleaned, report = service.clean(
-                df,
-                strategy,
-                remove_duplicates,
-                remove_outliers,
-                drop_columns,
-                threshold,
-            )
+                status.write("Analyzing missing values, duplicates and outliers...")
+
+                service = CleaningService()
+
+                cleaned, report = service.clean(
+                    df,
+                    strategy,
+                    remove_duplicates,
+                    remove_outliers,
+                    drop_columns,
+                    threshold,
+                )
+
+                for step in report:
+                    status.write(f"✅ {step}")
+
+                status.update(
+                    label="✅ Cleaning complete!",
+                    state="complete",
+                    expanded=False,
+                )
 
             st.session_state["dataset"] = cleaned
 
             st.session_state["cleaning_report"] = report
 
-            st.success("Dataset cleaned successfully!")
+            st.success("Dataset cleaned successfully! Scroll down to download.")
 
             st.rerun()
 
@@ -79,11 +92,13 @@ def show_page():
             width='stretch',
         ):
 
-            st.session_state["dataset"] = (
-                st.session_state["original_dataset"].copy()
-            )
+            with st.spinner("Restoring original dataset..."):
 
-            st.session_state["cleaning_report"] = []
+                st.session_state["dataset"] = (
+                    st.session_state["original_dataset"].copy()
+                )
+
+                st.session_state["cleaning_report"] = []
 
             st.success("Dataset restored.")
 
