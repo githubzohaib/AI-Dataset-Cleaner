@@ -19,6 +19,14 @@ def to_excel_bytes(df: pd.DataFrame) -> bytes:
     return buffer.getvalue()
 
 
+def _toast_csv():
+    st.toast("CSV download started", icon="⬇️")
+
+
+def _toast_excel():
+    st.toast("Excel download started", icon="⬇️")
+
+
 def download_buttons(df: pd.DataFrame, file_stem: str = "cleaned_dataset"):
     """Render CSV + Excel download buttons side by side for a dataframe."""
 
@@ -28,18 +36,23 @@ def download_buttons(df: pd.DataFrame, file_stem: str = "cleaned_dataset"):
 
         st.download_button(
             label="⬇️ Download as CSV",
-            data=to_csv_bytes(df),
+            # A callable defers the actual CSV encoding until the button is
+            # clicked (and runs off the main script thread), instead of
+            # re-encoding the whole dataframe on every single page rerun.
+            data=lambda: to_csv_bytes(df),
             file_name=f"{file_stem}.csv",
             mime="text/csv",
             width='stretch',
+            on_click=_toast_csv,
         )
 
     with col2:
 
         st.download_button(
             label="⬇️ Download as Excel",
-            data=to_excel_bytes(df),
+            data=lambda: to_excel_bytes(df),
             file_name=f"{file_stem}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             width='stretch',
+            on_click=_toast_excel,
         )

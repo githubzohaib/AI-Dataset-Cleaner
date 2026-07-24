@@ -27,6 +27,25 @@ class CleaningService:
 
         cleaned = df.copy()
 
+        # Column-drop must run BEFORE imputation: once fill_numeric/fill_categorical
+        # run, every column's missing percentage becomes 0, so a later threshold
+        # check would never find anything to drop.
+        if drop_columns:
+
+            cleaned, columns = drop_missing_columns(
+                cleaned,
+                threshold,
+            )
+
+            if columns:
+                report.append(
+                    f"Dropped columns with >{threshold}% missing values: {columns}"
+                )
+            else:
+                report.append(
+                    f"No columns exceeded the {threshold}% missing-value threshold"
+                )
+
         cleaned = fill_numeric(
             cleaned,
             numeric_strategy,
@@ -64,16 +83,5 @@ class CleaningService:
                 report.append(
                     f"Removed {result['count']} outliers"
                 )
-
-        if drop_columns:
-
-            cleaned, columns = drop_missing_columns(
-                cleaned,
-                threshold,
-            )
-
-            report.append(
-                f"Dropped columns: {columns}"
-            )
 
         return cleaned, report

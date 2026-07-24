@@ -106,15 +106,54 @@ section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked)
     padding: 0.6rem 1.2rem;
     font-weight: 600;
     box-shadow: 0 4px 18px rgba(236, 72, 153, 0.35);
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.15s ease-in-out,
+                filter 0.15s ease-in-out;
 }
 .stButton > button:hover, .stDownloadButton > button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 26px rgba(236, 72, 153, 0.55);
     filter: brightness(1.08);
 }
+/* Punchy press-down feedback so a click reads as registered, not just hovered */
 .stButton > button:active, .stDownloadButton > button:active {
-    transform: translateY(0px);
+    transform: translateY(1px) scale(0.96);
+    box-shadow: 0 2px 10px rgba(236, 72, 153, 0.45);
+    filter: brightness(0.95);
+    transition: transform 0.05s ease-out, box-shadow 0.05s ease-out, filter 0.05s ease-out;
+}
+.stButton > button:focus-visible, .stDownloadButton > button:focus-visible {
+    outline: 2px solid #F9A8D4;
+    outline-offset: 2px;
+}
+.stButton > button:disabled, .stDownloadButton > button:disabled {
+    background: rgba(236, 72, 153, 0.15) !important;
+    color: rgba(243, 240, 255, 0.45) !important;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* ---------- Status / spinner / toast (loading + completion feedback) ---------- */
+div[data-testid="stStatusWidget"] {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(236, 72, 153, 0.3);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(80, 20, 140, 0.2);
+}
+div[data-testid="stSpinner"] {
+    color: #F9A8D4 !important;
+    font-weight: 500;
+}
+div[data-testid="stSpinner"] > div:first-child {
+    border-top-color: #EC4899 !important;
+}
+div[data-testid="stToast"] {
+    background: linear-gradient(135deg, #2A1B3D 0%, #170A12 100%) !important;
+    border: 1px solid rgba(236, 72, 153, 0.45);
+    box-shadow: 0 10px 30px rgba(236, 72, 153, 0.35);
+}
+div[data-testid="stToast"] p {
+    color: #F3F0FF !important;
 }
 
 /* ---------- Glass card ---------- */
@@ -259,6 +298,9 @@ section[data-testid="stFileUploaderDropzone"] {
 .why-col-offset {
     margin-top: 46px;
 }
+.why-heading-wrap {
+    text-align: right;
+}
 .orb-wrap {
     display: flex;
     justify-content: center;
@@ -272,4 +314,33 @@ section[data-testid="stFileUploaderDropzone"] {
     0%   { transform: translateY(0px); }
     50%  { transform: translateY(-16px); }
     100% { transform: translateY(0px); }
+}
+
+/* ---------- Responsive tweaks ---------- */
+/* Streamlit stacks st.columns() into a single column below ~768px. The
+   Why-Choose section's right-aligned heading and staggered card offset
+   only read correctly in the 3-column desktop layout — on a stacked
+   mobile layout they show up as off-center text and a large blank gap. */
+@media (max-width: 768px) {
+    .landing-hero {
+        padding: 40px 16px 20px 16px;
+    }
+    .landing-title {
+        font-size: 34px;
+    }
+    .landing-subtitle {
+        font-size: 16px;
+    }
+    .why-col-offset {
+        margin-top: 0;
+    }
+    .why-heading-wrap {
+        text-align: center;
+    }
+    .why-card {
+        text-align: center;
+    }
+    .orb-wrap {
+        padding: 10px 0;
+    }
 }

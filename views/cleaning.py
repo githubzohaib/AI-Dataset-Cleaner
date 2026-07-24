@@ -3,6 +3,7 @@ import streamlit as st
 from components.dataset_guard import get_dataset
 from components.page_header import show_header
 from components.download import download_buttons
+from components.feedback import action_status
 
 from services.cleaning_service import CleaningService
 
@@ -53,7 +54,7 @@ def show_page():
             type="primary",
         ):
 
-            with st.status("🧹 Cleaning your dataset...", expanded=True) as status:
+            with action_status("🧹 Cleaning your dataset...") as status:
 
                 status.write("Analyzing missing values, duplicates and outliers...")
 
@@ -79,7 +80,14 @@ def show_page():
 
             st.session_state["dataset"] = cleaned
 
-            st.session_state["cleaning_report"] = report
+            # Append rather than overwrite: the Duplicates/Outliers pages append
+            # their own manual actions to this same list, so overwriting here
+            # would silently erase any history built up on those pages.
+            st.session_state["cleaning_report"] = (
+                st.session_state.get("cleaning_report", []) + report
+            )
+
+            st.toast("Dataset cleaned successfully!", icon="✅")
 
             st.success("Dataset cleaned successfully! Scroll down to download.")
 
@@ -92,13 +100,21 @@ def show_page():
             width='stretch',
         ):
 
-            with st.spinner("Restoring original dataset..."):
+            with action_status("♻️ Restoring original dataset...") as status:
 
                 st.session_state["dataset"] = (
                     st.session_state["original_dataset"].copy()
                 )
 
                 st.session_state["cleaning_report"] = []
+
+                status.update(
+                    label="✅ Dataset restored!",
+                    state="complete",
+                    expanded=False,
+                )
+
+            st.toast("Dataset restored to its original state", icon="♻️")
 
             st.success("Dataset restored.")
 

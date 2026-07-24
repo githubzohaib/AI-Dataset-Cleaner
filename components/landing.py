@@ -1,3 +1,5 @@
+import time
+
 import streamlit as st
 
 
@@ -185,8 +187,8 @@ def show_landing():
             <div class="landing-badge">✨ AI-POWERED DATA CLEANING</div>
             <div class="landing-title">Turn Messy Data into<br>Clean, Trusted Insights</div>
             <p class="landing-subtitle">
-                Upload any CSV and let AI detect missing values, duplicates and outliers —
-                then clean, visualize and export your dataset in minutes.
+                Upload CSV, Excel, JSON or Parquet and let AI detect missing values,
+                duplicates and outliers — then clean, visualize and export your dataset in minutes.
             </p>
         </div>
         """,
@@ -200,14 +202,21 @@ def show_landing():
 
         if st.button("🚀 Launch App", width='stretch', type="primary"):
 
+            with st.spinner("🚀 Launching your workspace..."):
+                time.sleep(0.4)
+
             st.session_state["show_landing"] = False
+
+            st.query_params["app"] = "1"
+
+            st.toast("Welcome to AI Dataset Cleaner!", icon="🚀")
 
             st.rerun()
 
     st.markdown(
         """
         <div class="landing-steps">
-            <div class="step-chip"><span class="step-num">1</span> Upload your CSV</div>
+            <div class="step-chip"><span class="step-num">1</span> Upload your dataset</div>
             <div class="step-chip"><span class="step-num">2</span> Let AI analyze &amp; clean it</div>
             <div class="step-chip"><span class="step-num">3</span> Download the clean version</div>
         </div>
@@ -265,7 +274,7 @@ def show_landing():
 
         st.markdown(
             """
-            <div style="text-align:right;">
+            <div class="why-heading-wrap">
                 <div class="why-heading">Why Choose<br>AI Dataset<br>Cleaner?</div>
             </div>
             """,

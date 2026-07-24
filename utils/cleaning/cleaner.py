@@ -2,7 +2,18 @@
 Cleaning utility functions.
 """
 
+import warnings
+
 import pandas as pd
+
+# pandas' own dict-based fillna() implementation raises a spurious
+# "ChainedAssignmentError" FutureWarning on every call in pandas 2.2+ — it
+# fires even when using the exact non-chained, column-by-column pattern the
+# warning itself recommends as the fix, so it's a false positive in pandas'
+# internals rather than something callers can avoid. Confirmed the fill
+# still applies correctly either way; this just keeps it out of logs.
+# https://github.com/pandas-dev/pandas/issues/57734
+_FILLNA_WARNING = ".*ChainedAssignmentError.*"
 
 
 def fill_numeric(df: pd.DataFrame, strategy: str):
@@ -22,7 +33,9 @@ def fill_numeric(df: pd.DataFrame, strategy: str):
         fill_values[col] = value
 
     if fill_values:
-        df = df.fillna(value=fill_values)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message=_FILLNA_WARNING, category=FutureWarning)
+            df = df.fillna(value=fill_values)
 
     return df
 
@@ -41,7 +54,9 @@ def fill_categorical(df: pd.DataFrame):
             fill_values[col] = mode[0]
 
     if fill_values:
-        df = df.fillna(value=fill_values)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message=_FILLNA_WARNING, category=FutureWarning)
+            df = df.fillna(value=fill_values)
 
     return df
 

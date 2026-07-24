@@ -65,7 +65,11 @@ def show_page():
         if categorical_df.empty:
             st.info("No categorical columns found.")
         else:
+            # describe() mixes ints (count/unique/freq) and strings (top) within
+            # the same object-dtype column, which pyarrow can't serialize
+            # consistently for st.dataframe. Stringify explicitly so rendering
+            # is deterministic instead of relying on Streamlit's Arrow fallback.
             dataframe(
                 "Categorical Summary",
-                categorical_df,
+                categorical_df.astype(str),
             )

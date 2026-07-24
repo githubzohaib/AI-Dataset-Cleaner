@@ -20,7 +20,7 @@ def show_home():
         "dataset" not in st.session_state
         or st.session_state["dataset"] is None
     ):
-        st.info("📂 Upload a CSV dataset from the sidebar to begin.")
+        st.info("📂 Upload a dataset (CSV, Excel, JSON, Parquet...) from the sidebar to begin.")
         return
 
     df = get_dataset()

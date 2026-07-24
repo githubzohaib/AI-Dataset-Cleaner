@@ -1,3 +1,5 @@
+import uuid
+
 import streamlit as st
 
 from config.settings import (
@@ -11,21 +13,47 @@ from components.sidebar import sidebar
 from components.home import show_home
 from components.landing import show_landing
 
+from utils.persistence import cleanup_stale_sessions, load_session, save_session
+
+# ----------------------------
+# Session Identity (survives a browser refresh via the URL)
+# ----------------------------
+
+if "session_id" not in st.session_state:
+
+    # Reuse the id already in the URL if this is a refresh of a session we've
+    # seen before; otherwise mint a new one and stamp it into the URL so the
+    # *next* refresh can find it too.
+    st.session_state["session_id"] = st.query_params.get("sid") or uuid.uuid4().hex
+
+    st.query_params["sid"] = st.session_state["session_id"]
+
+    cleanup_stale_sessions()
+
 # ----------------------------
 # Session State Initialization
 # ----------------------------
 
 if "dataset" not in st.session_state:
-    st.session_state["dataset"] = None
 
-if "original_dataset" not in st.session_state:
-    st.session_state["original_dataset"] = None
+    # Browser refresh = brand-new session_state, but the "sid" query param
+    # above survives — use it to restore whatever dataset was last uploaded
+    # instead of forcing the user to re-upload from scratch every refresh.
+    restored = load_session(st.session_state["session_id"])
 
-if "cleaning_report" not in st.session_state:
-    st.session_state["cleaning_report"] = []
+    st.session_state["dataset"] = restored["dataset"] if restored else None
+    st.session_state["original_dataset"] = restored["original_dataset"] if restored else None
+    st.session_state["cleaning_report"] = restored["cleaning_report"] if restored else []
+    st.session_state["uploaded_file_name"] = restored["source_name"] if restored else None
+    st.session_state["_persisted_dataset_id"] = id(st.session_state["dataset"])
 
 if "show_landing" not in st.session_state:
-    st.session_state["show_landing"] = True
+    # A browser refresh starts a brand-new Streamlit session, wiping
+    # session_state entirely — so this init would normally re-trigger the
+    # landing gate every time. The "app" query param survives a refresh
+    # (it's part of the URL), so we use it to remember that the user had
+    # already entered the app and skip straight back to the dashboard shell.
+    st.session_state["show_landing"] = st.query_params.get("app") != "1"
 
 # ----------------------------
 # Page Config
@@ -98,3 +126,27 @@ else:
     else:
         module = __import__(module_name, fromlist=[function_name])
         getattr(module, function_name)()
+
+    # ----------------------------
+    # Persist the dataset so it survives a browser refresh
+    # ----------------------------
+    # Every mutating action (upload, clean, reset, remove duplicates/outliers)
+    # replaces st.session_state["dataset"] with a new DataFrame object and
+    # then reruns — so comparing object identity here is a cheap, reliable
+    # way to write to disk only when something actually changed, instead of
+    # re-pickling on every single unrelated rerun (widget toggles, etc.).
+    current_dataset = st.session_state.get("dataset")
+
+    if current_dataset is not None and (
+        st.session_state.get("_persisted_dataset_id") != id(current_dataset)
+    ):
+
+        save_session(
+            st.session_state["session_id"],
+            current_dataset,
+            st.session_state.get("original_dataset"),
+            st.session_state.get("cleaning_report", []),
+            st.session_state.get("uploaded_file_name"),
+        )
+
+        st.session_state["_persisted_dataset_id"] = id(current_dataset)
