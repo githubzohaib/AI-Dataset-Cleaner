@@ -4,6 +4,12 @@
 
 ai-dataset-cleaner is a Streamlit-based web application designed to streamline the process of cleaning and analyzing datasets. It provides an intuitive interface for users to handle common data quality issues like missing values, duplicates, outliers, and inconsistencies, while offering insights and visualization tools to support data preprocessing tasks.
 
+
+## Live Link
+
+**https://ai-dataset-cleaner.streamlit.app/**
+
+
 ## Key Features
 
 - Data Exploration: Comprehensive overview of dataset structure, including shape, column statistics, and missing value patterns.
@@ -13,6 +19,7 @@ ai-dataset-cleaner is a Streamlit-based web application designed to streamline t
 - Export Capabilities: Export cleaned datasets in multiple formats (CSV, Excel, Parquet).
 - Recommendation Engine: Suggests data cleaning strategies based on dataset characteristics and quality metrics.
 
+
 ## Installation
 
 1. Install Python 3.8+
@@ -20,6 +27,7 @@ ai-dataset-cleaner is a Streamlit-based web application designed to streamline t
 pip install -r requir
 4. Run the application:
 streamlit run app.py
+
 
 ## Usage
 
