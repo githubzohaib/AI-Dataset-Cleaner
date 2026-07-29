@@ -19,6 +19,13 @@ WHY_ITEMS = [
     ("04", "Export Anywhere", "One click to CSV or Excel — ready for your next tool."),
 ]
 
+NAV_LINKS = [
+    ("Home", "#top"),
+    ("Features", "#features"),
+    ("Why Us", "#why-choose"),
+    ("Get Started", "#get-started"),
+]
+
 ORB_SVG = """
 <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -58,15 +65,89 @@ ORB_SVG = """
 </svg>
 """
 
+LOGO_SVG = """
+<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F472B6"/>
+      <stop offset="100%" stop-color="#DB2777"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="28" height="28" rx="9" fill="url(#logoGrad)" opacity="0.18"/>
+  <rect x="1" y="1" width="28" height="28" rx="9" fill="none" stroke="url(#logoGrad)" stroke-width="1.4"/>
+  <circle cx="15" cy="15" r="6.5" fill="none" stroke="url(#logoGrad)" stroke-width="1.6"/>
+  <circle cx="15" cy="15" r="2.2" fill="url(#logoGrad)"/>
+</svg>
+"""
+
 
 def _inject_landing_css():
 
     st.markdown(
         """
         <style>
+        /* pull page content up so the navbar sits flush at the top */
+        .block-container {
+            padding-top: 0.5rem !important;
+        }
+
+        .navbar-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            margin: -0.5rem -1rem 10px -1rem;
+            padding: 14px 34px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(12, 9, 24, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(236, 72, 153, 0.22);
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #F3F0FF;
+            white-space: nowrap;
+        }
+        .navbar-logo span {
+            background: linear-gradient(90deg, #F472B6, #DB2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .navbar-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 34px;
+            flex: 1;
+        }
+        .navbar-links a {
+            color: #D8CFEF;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            opacity: 0.85;
+            transition: opacity 0.15s ease, color 0.15s ease;
+        }
+        .navbar-links a:hover {
+            opacity: 1;
+            color: #F9A8D4;
+        }
+
+        /* make the real Streamlit CTA button in the navbar column compact + right aligned */
+        div[data-testid="stButton"] button[kind="primary"] {
+            border-radius: 999px !important;
+        }
+
         .landing-hero {
             text-align: center;
-            padding: 70px 20px 30px 20px;
+            padding: 28px 20px 20px 20px;
         }
         .landing-badge {
             display: inline-block;
@@ -84,6 +165,7 @@ def _inject_landing_css():
             font-size: 56px;
             font-weight: 800;
             line-height: 1.1;
+            text-align: center;
             background: linear-gradient(90deg, #F3F0FF 0%, #F472B6 45%, #DB2777 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -96,6 +178,7 @@ def _inject_landing_css():
             max-width: 650px;
             margin: 0 auto 10px auto;
             font-weight: 400;
+            text-align: center;
         }
         .landing-glow {
             position: fixed;
@@ -115,6 +198,7 @@ def _inject_landing_css():
             border-radius: 18px;
             padding: 26px 22px;
             height: 100%;
+            text-align: center;
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
         .feature-card:hover {
@@ -137,12 +221,21 @@ def _inject_landing_css():
             color: #B9AEDD;
             line-height: 1.5;
         }
+        .section-heading {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 800;
+            color: #F3F0FF;
+            margin: 10px 0 28px 0;
+        }
         .landing-steps {
             display: flex;
             justify-content: center;
+            align-items: center;
             gap: 40px;
             flex-wrap: wrap;
-            margin: 10px 0 40px 0;
+            margin: 18px 0 40px 0;
+            text-align: center;
         }
         .step-chip {
             display: flex;
@@ -163,6 +256,12 @@ def _inject_landing_css():
             justify-content: center;
             font-size: 13px;
         }
+        .why-card {
+            text-align: center;
+        }
+        .why-heading {
+            text-align: center;
+        }
         .landing-footer {
             text-align: center;
             color: #7C6BA8;
@@ -171,15 +270,56 @@ def _inject_landing_css():
         }
         </style>
         <div class="landing-glow"></div>
+        <div id="top"></div>
         """,
         unsafe_allow_html=True,
     )
+
+
+def _launch_app():
+    with st.spinner("🚀 Launching your workspace..."):
+        time.sleep(0.4)
+
+    st.session_state["show_landing"] = False
+    st.query_params["app"] = "1"
+    st.toast("Welcome to AI Dataset Cleaner!", icon="🚀")
+    st.rerun()
+
+
+def _render_navbar():
+    """Sticky navbar: logo left, centered nav links, Launch button top-right."""
+
+    nav_links_html = "".join(
+        f'<a href="{href}">{label}</a>' for label, href in NAV_LINKS
+    )
+
+    st.markdown('<div class="navbar-wrap">', unsafe_allow_html=True)
+    left, center, right = st.columns([1.2, 3, 1], vertical_alignment="center")
+
+    with left:
+        st.markdown(
+            f'<div class="navbar-logo">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>',
+            unsafe_allow_html=True,
+        )
+
+    with center:
+        st.markdown(
+            f'<div class="navbar-links">{nav_links_html}</div>',
+            unsafe_allow_html=True,
+        )
+
+    with right:
+        if st.button("🚀 Launch App", key="navbar_launch", width="stretch", type="primary"):
+            _launch_app()
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def show_landing():
     """Render the landing page. Sets session flag and reruns when user clicks Launch."""
 
     _inject_landing_css()
+    _render_navbar()
 
     st.markdown(
         """
@@ -196,22 +336,13 @@ def show_landing():
     )
 
     # ---- Centered CTA button ----
+    st.markdown('<div id="get-started"></div>', unsafe_allow_html=True)
     _, mid, _ = st.columns([1, 1, 1])
 
     with mid:
 
-        if st.button("🚀 Launch App", width='stretch', type="primary"):
-
-            with st.spinner("🚀 Launching your workspace..."):
-                time.sleep(0.4)
-
-            st.session_state["show_landing"] = False
-
-            st.query_params["app"] = "1"
-
-            st.toast("Welcome to AI Dataset Cleaner!", icon="🚀")
-
-            st.rerun()
+        if st.button("🚀 Launch App", key="hero_launch", width="stretch", type="primary"):
+            _launch_app()
 
     st.markdown(
         """
@@ -227,11 +358,14 @@ def show_landing():
     st.markdown("<br>", unsafe_allow_html=True)
 
     # ---- Why Choose section: numbered offset cards + orb illustration ----
+    st.markdown('<div id="why-choose"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-heading">Why Choose AI Dataset Cleaner?</div>', unsafe_allow_html=True)
+
     left_col, mid_col, right_col = st.columns([1, 1, 1])
 
     with left_col:
 
-        for num, title, desc in [WHY_ITEMS[0]]:
+        for num, title, desc in [WHY_ITEMS[0], WHY_ITEMS[2]]:
             st.markdown(
                 f"""
                 <div class="why-card">
@@ -242,22 +376,6 @@ def show_landing():
                 """,
                 unsafe_allow_html=True,
             )
-
-        st.markdown('<div class="why-col-offset">', unsafe_allow_html=True)
-
-        for num, title, desc in [WHY_ITEMS[2]]:
-            st.markdown(
-                f"""
-                <div class="why-card">
-                    <span class="why-num">{num}</span>
-                    <div class="why-title">{title}</div>
-                    <div class="why-desc">{desc}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with mid_col:
 
@@ -272,28 +390,7 @@ def show_landing():
 
     with right_col:
 
-        st.markdown(
-            """
-            <div class="why-heading-wrap">
-                <div class="why-heading">Why Choose<br>AI Dataset<br>Cleaner?</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        for num, title, desc in [WHY_ITEMS[1]]:
-            st.markdown(
-                f"""
-                <div class="why-card">
-                    <span class="why-num">{num}</span>
-                    <div class="why-title">{title}</div>
-                    <div class="why-desc">{desc}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-        for num, title, desc in [WHY_ITEMS[3]]:
+        for num, title, desc in [WHY_ITEMS[1], WHY_ITEMS[3]]:
             st.markdown(
                 f"""
                 <div class="why-card">
@@ -308,6 +405,9 @@ def show_landing():
     st.markdown("<br><br>", unsafe_allow_html=True)
 
     # ---- Feature grid ----
+    st.markdown('<div id="features"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-heading">Everything You Need</div>', unsafe_allow_html=True)
+
     cols = st.columns(3)
 
     for i, (icon, title, desc) in enumerate(FEATURES):
