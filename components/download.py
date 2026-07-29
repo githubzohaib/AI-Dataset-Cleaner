@@ -36,10 +36,7 @@ def download_buttons(df: pd.DataFrame, file_stem: str = "cleaned_dataset"):
 
         st.download_button(
             label="⬇️ Download as CSV",
-            # A callable defers the actual CSV encoding until the button is
-            # clicked (and runs off the main script thread), instead of
-            # re-encoding the whole dataframe on every single page rerun.
-            data=lambda: to_csv_bytes(df),
+            data=to_csv_bytes(df),
             file_name=f"{file_stem}.csv",
             mime="text/csv",
             width='stretch',
@@ -50,7 +47,7 @@ def download_buttons(df: pd.DataFrame, file_stem: str = "cleaned_dataset"):
 
         st.download_button(
             label="⬇️ Download as Excel",
-            data=lambda: to_excel_bytes(df),
+            data=to_excel_bytes(df),
             file_name=f"{file_stem}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             width='stretch',
