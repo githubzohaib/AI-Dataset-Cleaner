@@ -86,6 +86,11 @@ def _inject_landing_css():
     st.markdown(
         """
         <style>
+        /* hide Streamlit's default top toolbar/header bar so nothing sits above our navbar */
+        [data-testid="stHeader"] {
+            display: none;
+        }
+
         /* pull page content up so the navbar sits flush at the top */
         .block-container {
             padding-top: 0.5rem !important;
@@ -172,13 +177,19 @@ def _inject_landing_css():
             background-clip: text;
             margin-bottom: 10px;
         }
-        .landing-subtitle {
+        .landing-hero p.landing-subtitle {
             font-size: 19px;
             color: #F4A8CB;
             max-width: 650px;
-            margin: 0 auto 10px auto;
+            width: 100%;
+            margin: 0 auto 10px auto !important;
             font-weight: 400;
-            text-align: center;
+            text-align: center !important;
+        }
+        .landing-hero div[data-testid="stMarkdownContainer"] {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .landing-glow {
             position: fixed;
