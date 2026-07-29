@@ -91,7 +91,11 @@ def _inject_mobile_sidebar_css():
                 pointer-events: none;
             }
 
-            /* close X inside sidebar */
+            /* close X inside sidebar — shown only once openSidebar() has
+               moved it inside .mobile-open, driven by the class alone (see
+               rule below) rather than the JS inline style that used to try
+               to flip this: an inline style can never win against this
+               !important rule, so the X was never actually visible. */
             .sb-close {
                 display: none !important;
                 position: absolute;
@@ -114,6 +118,9 @@ def _inject_mobile_sidebar_css():
             }
             .sb-close:active {
                 background: rgba(255,255,255,0.14);
+            }
+            [data-testid="stSidebar"].mobile-open .sb-close {
+                display: flex !important;
             }
 
             /* full-width main content */
@@ -179,21 +186,16 @@ def _inject_mobile_sidebar_js():
                 if (!sb) return;
                 sb.classList.add('mobile-open');
                 if (bd) bd.classList.add('active');
-                if (cl) {
-                    cl.style.display = 'flex';
-                    if (!sb.contains(cl)) {
-                        sb.insertBefore(cl, sb.firstChild);
-                    }
+                if (cl && !sb.contains(cl)) {
+                    sb.insertBefore(cl, sb.firstChild);
                 }
             }
 
             function closeSidebar() {
                 var sb = doc.querySelector('[data-testid="stSidebar"]');
                 var bd = doc.getElementById('sbBackdrop');
-                var cl = doc.getElementById('sbClose');
                 if (sb) sb.classList.remove('mobile-open');
                 if (bd) bd.classList.remove('active');
-                if (cl) cl.style.display = 'none';
             }
 
             // EVENT DELEGATION on document (capture phase)
@@ -376,7 +378,7 @@ def sidebar():
             st.session_state["cleaning_report"] = []
             st.session_state["uploaded_file_fingerprint"] = None
             st.session_state["uploaded_file_name"] = None
-            st.session_state["_persisted_dataset_id"] = None
+            st.session_state["_persisted_dataset_ref"] = None
 
             st.session_state.pop("outlier_scan_result", None)
 

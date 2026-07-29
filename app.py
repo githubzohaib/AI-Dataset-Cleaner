@@ -74,7 +74,14 @@ hide_streamlit_style = """
 #MainMenu { visibility:hidden; }
 footer { visibility:hidden; }
 header { visibility:hidden; }
-[data-testid="stToolbar"]{ display:none; }
+/* visibility (not display:none): stExpandSidebarButton — the only control
+   that re-opens the sidebar once Streamlit's own native logic collapses it
+   (its AUTO responsive behavior on narrow widths) — lives inside this
+   toolbar. display:none would remove it from the tree entirely, with no way
+   for a descendant to opt back in, permanently stranding a collapsed
+   sidebar on desktop with no way to bring it back. */
+[data-testid="stToolbar"]{ visibility:hidden; }
+[data-testid="stExpandSidebarButton"] { visibility: visible !important; }
 </style>
 """
 
