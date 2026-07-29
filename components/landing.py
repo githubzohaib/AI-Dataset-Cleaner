@@ -21,9 +21,8 @@ WHY_ITEMS = [
 
 NAV_LINKS = [
     ("Home", "#top"),
-    ("Features", "#features"),
     ("Why Us", "#why-choose"),
-    ("Get Started", "#get-started"),
+    ("Features", "#features"),
 ]
 
 ORB_SVG = """
