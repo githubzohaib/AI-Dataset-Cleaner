@@ -86,29 +86,47 @@ def _inject_landing_css():
     st.markdown(
         """
         <style>
-        /* hide Streamlit's default top toolbar/header bar so nothing sits above our navbar */
-        [data-testid="stHeader"] {
-            display: none;
+        /* hide every bit of Streamlit's default top chrome */
+        [data-testid="stHeader"],
+        [data-testid="stToolbar"],
+        [data-testid="stDecoration"],
+        [data-testid="stStatusWidget"],
+        header {
+            display: none !important;
+            height: 0 !important;
+            visibility: hidden !important;
         }
-
-        /* pull page content up so the navbar sits flush at the top */
+        .stApp {
+            margin-top: 0 !important;
+            background: transparent !important;
+        }
+        [data-testid="stAppViewContainer"] {
+            padding-top: 0 !important;
+            background: transparent !important;
+        }
+        /* remove the block-container background and padding so no box appears behind navbar */
         .block-container {
-            padding-top: 0.5rem !important;
+            padding-top: 0 !important;
+            padding-bottom: 2rem !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
         }
 
+        /* ── NAVBAR ── */
         .navbar-wrap {
             position: sticky;
             top: 0;
             z-index: 999;
-            margin: -0.5rem -1rem 10px -1rem;
             padding: 14px 34px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(12, 9, 24, 0.72);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(236, 72, 153, 0.22);
+            background: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border-bottom: none;
         }
         .navbar-logo {
             display: flex;
@@ -144,12 +162,12 @@ def _inject_landing_css():
             opacity: 1;
             color: #F9A8D4;
         }
-
-        /* make the real Streamlit CTA button in the navbar column compact + right aligned */
+        /* make the navbar button pill-shaped */
         div[data-testid="stButton"] button[kind="primary"] {
             border-radius: 999px !important;
         }
 
+        /* ── HERO ── */
         .landing-hero {
             text-align: center;
             padding: 28px 20px 20px 20px;
@@ -202,6 +220,8 @@ def _inject_landing_css():
             z-index: -1;
             pointer-events: none;
         }
+
+        /* ── FEATURE CARDS ── */
         .feature-card {
             background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(14px);
@@ -232,6 +252,8 @@ def _inject_landing_css():
             color: #B9AEDD;
             line-height: 1.5;
         }
+
+        /* ── SECTION HEADINGS ── */
         .section-heading {
             text-align: center;
             font-size: 30px;
@@ -239,6 +261,8 @@ def _inject_landing_css():
             color: #F3F0FF;
             margin: 10px 0 28px 0;
         }
+
+        /* ── STEPS ── */
         .landing-steps {
             display: flex;
             justify-content: center;
@@ -267,17 +291,63 @@ def _inject_landing_css():
             justify-content: center;
             font-size: 13px;
         }
+
+        /* ── WHY CARDS ── */
         .why-card {
             text-align: center;
         }
         .why-heading {
             text-align: center;
         }
-        .landing-footer {
-            text-align: center;
-            color: #7C6BA8;
+
+        /* ── FOOTER ── */
+        .footer-wrap {
+            margin-top: 60px;
+            padding: 28px 34px 22px 34px;
+            border-top: 1px solid rgba(236, 72, 153, 0.15);
+        }
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-brand-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #F3F0FF;
+        }
+        .footer-brand-name span {
+            background: linear-gradient(90deg, #F472B6, #DB2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: #9A8FC2;
             font-size: 13px;
-            margin-top: 50px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .footer-links a:hover {
+            color: #F9A8D4;
+        }
+        .footer-divider {
+            width: 1px;
+            height: 14px;
+            background: rgba(236, 72, 153, 0.25);
         }
         </style>
         <div class="landing-glow"></div>
@@ -298,7 +368,7 @@ def _launch_app():
 
 
 def _render_navbar():
-    """Sticky navbar: logo left, centered nav links, Launch button top-right."""
+    """Sticky navbar — no background box, transparent over the page glow."""
 
     nav_links_html = "".join(
         f'<a href="{href}">{label}</a>' for label, href in NAV_LINKS
@@ -332,6 +402,7 @@ def show_landing():
     _inject_landing_css()
     _render_navbar()
 
+    # ── HERO ──
     st.markdown(
         """
         <div class="landing-hero">
@@ -346,12 +417,11 @@ def show_landing():
         unsafe_allow_html=True,
     )
 
-    # ---- Centered CTA button ----
+    # ── CTA BUTTON ──
     st.markdown('<div id="get-started"></div>', unsafe_allow_html=True)
     _, mid, _ = st.columns([1, 1, 1])
 
     with mid:
-
         if st.button("🚀 Launch App", key="hero_launch", width="stretch", type="primary"):
             _launch_app()
 
@@ -368,14 +438,13 @@ def show_landing():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ---- Why Choose section: numbered offset cards + orb illustration ----
+    # ── WHY CHOOSE ──
     st.markdown('<div id="why-choose"></div>', unsafe_allow_html=True)
     st.markdown('<div class="section-heading">Why Choose AI Dataset Cleaner?</div>', unsafe_allow_html=True)
 
     left_col, mid_col, right_col = st.columns([1, 1, 1])
 
     with left_col:
-
         for num, title, desc in [WHY_ITEMS[0], WHY_ITEMS[2]]:
             st.markdown(
                 f"""
@@ -389,18 +458,12 @@ def show_landing():
             )
 
     with mid_col:
-
         st.markdown(
-            f"""
-            <div class="orb-wrap">
-                <div class="orb-float" style="width:220px;">{ORB_SVG}</div>
-            </div>
-            """,
+            f'<div class="orb-wrap"><div class="orb-float" style="width:220px;">{ORB_SVG}</div></div>',
             unsafe_allow_html=True,
         )
 
     with right_col:
-
         for num, title, desc in [WHY_ITEMS[1], WHY_ITEMS[3]]:
             st.markdown(
                 f"""
@@ -415,16 +478,14 @@ def show_landing():
 
     st.markdown("<br><br>", unsafe_allow_html=True)
 
-    # ---- Feature grid ----
+    # ── FEATURE GRID ──
     st.markdown('<div id="features"></div>', unsafe_allow_html=True)
     st.markdown('<div class="section-heading">Everything You Need</div>', unsafe_allow_html=True)
 
     cols = st.columns(3)
 
     for i, (icon, title, desc) in enumerate(FEATURES):
-
         with cols[i % 3]:
-
             st.markdown(
                 f"""
                 <div class="feature-card">
@@ -435,12 +496,25 @@ def show_landing():
                 """,
                 unsafe_allow_html=True,
             )
-
             st.markdown("<br>", unsafe_allow_html=True)
 
+    # ── MINIMAL FOOTER ──
     st.markdown(
-        """
-        <p class="landing-footer">🧠 AI Dataset Cleaner · Purple AI Edition · Made with 💜 using Streamlit</p>
+        f"""
+        <div class="footer-wrap">
+            <div class="footer-inner">
+                <div class="footer-brand-name">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>
+                <div class="footer-links">
+                    <a href="#">Terms</a>
+                    <div class="footer-divider"></div>
+                    <a href="#">Privacy Policy</a>
+                    <div class="footer-divider"></div>
+                    <a href="#">Security</a>
+                    <div class="footer-divider"></div>
+                    <a href="#">General</a>
+                </div>
+            </div>
+        </div>
         """,
         unsafe_allow_html=True,
     )
