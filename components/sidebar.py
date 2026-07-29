@@ -194,10 +194,4 @@ def sidebar():
 
         st.rerun()
 
-    st.sidebar.divider()
-
-    st.sidebar.caption("Version 2.0 · Purple AI Edition")
-
-    st.sidebar.caption("Made with 💜 using Streamlit")
-
     return PAGES[page]
