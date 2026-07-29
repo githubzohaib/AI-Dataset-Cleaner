@@ -5,16 +5,16 @@ from utils.persistence import delete_session
 
 
 PAGES = {
-    "🏠 Dashboard": "home",
-    "📊 Overview": "overview",
-    "🔍 Explorer": "explorer",
-    "🕳️ Missing Values": "missing",
-    "📋 Duplicates": "duplicates",
-    "🤖 ML Outliers": "outliers",
-    "🧹 Cleaning": "cleaning",
-    "📈 Analytics": "visualization",
-    "💡 AI Insights": "insights",
-    "⬇️ Export": "export",
+    "  Dashboard": "home",
+    "  Overview": "overview",
+    "  Explorer": "explorer",
+    "  Missing Values": "missing",
+    "  Duplicates": "duplicates",
+    "  Outliers": "outliers",
+    "  Cleaning": "cleaning",
+    "  Analytics": "visualization",
+    "  AI Insights": "insights",
+    "  Export": "export",
 }
 
 
