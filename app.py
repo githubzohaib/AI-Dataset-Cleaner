@@ -78,13 +78,17 @@ header { visibility:hidden; }
 </style>
 """
 
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
 try:
     with open(CSS_PATH) as css_file:
-        st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
+        custom_css = f"<style>{css_file.read()}</style>"
 except FileNotFoundError:
-    pass
+    custom_css = ""
+
+# Merged into a single st.markdown call: two separate calls would sit as two
+# separate siblings in Streamlit's top-level vertical block, each pulling in
+# its own flex "gap" — pure dead space above everything else on the page,
+# including the landing page's sticky navbar.
+st.markdown(hide_streamlit_style + custom_css, unsafe_allow_html=True)
 
 # ----------------------------
 # Landing Page Gate

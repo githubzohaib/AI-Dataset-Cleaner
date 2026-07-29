@@ -167,7 +167,17 @@ def _inject_landing_css():
             border-radius: 999px !important;
         }
 
-        /* ── MOBILE HAMBURGER (inside navbar-wrap, hidden on desktop) ── */
+        /* ── MOBILE COMPACT BAR (logo + hamburger, hidden on desktop) ──
+           These are rendered as one raw-HTML block so they are real DOM
+           siblings, unlike the desktop row below (see .st-key-navbar_desktop_row). */
+        .navbar-mobile-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* ── MOBILE HAMBURGER (inside navbar-mobile-bar, hidden on desktop) ── */
         .nav-hamburger {
             display: none;
             width: 40px;
@@ -433,12 +443,21 @@ def _inject_landing_css():
            ══════════════════════════════════════════════ */
         @media (max-width: 768px) {
 
-            /* hide the Streamlit column divs inside navbar on mobile */
-            .navbar-wrap > [data-testid="stHorizontalBlock"] {
+            /* Hide the desktop logo/links/button row. Streamlit's raw-HTML
+               `.navbar-wrap` open/close tags are separate sibling elements,
+               NOT real DOM parents of the st.columns() row rendered between
+               them — so a `.navbar-wrap > [data-testid="stHorizontalBlock"]`
+               selector never matches anything. Target the keyed container's
+               real, stable class instead (see _render_navbar()). */
+            .st-key-navbar_desktop_row {
                 display: none !important;
             }
 
-            /* show hamburger */
+            /* show the compact logo + hamburger bar */
+            .navbar-mobile-bar {
+                display: flex;
+            }
+
             .nav-hamburger {
                 display: flex;
             }
@@ -613,16 +632,23 @@ def _render_navbar():
 
     st.markdown('<div class="navbar-wrap">', unsafe_allow_html=True)
 
-    # Hamburger button (hidden on desktop via CSS, shown on mobile)
+    # Compact mobile bar: logo + hamburger, hidden on desktop via CSS.
+    # Rendered as a single raw-HTML block so the logo and hamburger are real
+    # DOM siblings (unlike the desktop row below, which is built from
+    # separate st.columns/st.button calls — see the CSS note on
+    # .st-key-navbar_desktop_row for why that distinction matters here).
     st.markdown(
-        """
-        <div class="nav-hamburger" id="navHamburger">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#F9A8D4"
-                 stroke-width="2.2" stroke-linecap="round">
-                <line x1="4" y1="6" x2="20" y2="6"/>
-                <line x1="4" y1="12" x2="20" y2="12"/>
-                <line x1="4" y1="18" x2="20" y2="18"/>
-            </svg>
+        f"""
+        <div class="navbar-mobile-bar">
+            <div class="navbar-logo">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>
+            <div class="nav-hamburger" id="navHamburger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#F9A8D4"
+                     stroke-width="2.2" stroke-linecap="round">
+                    <line x1="4" y1="6" x2="20" y2="6"/>
+                    <line x1="4" y1="12" x2="20" y2="12"/>
+                    <line x1="4" y1="18" x2="20" y2="18"/>
+                </svg>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -642,24 +668,29 @@ def _render_navbar():
         unsafe_allow_html=True,
     )
 
-    # Desktop layout using Streamlit columns (hidden on mobile via CSS)
-    left, center, right = st.columns([1.2, 3, 1], vertical_alignment="center")
+    # Desktop layout using Streamlit columns. Wrapped in a keyed container so
+    # it gets a stable, real CSS class (`st-key-navbar_desktop_row`) that the
+    # mobile media query can reliably target — st.markdown's raw
+    # `.navbar-wrap` div does NOT actually become this row's DOM parent, so a
+    # selector assuming that nesting silently matches nothing.
+    with st.container(key="navbar_desktop_row"):
+        left, center, right = st.columns([1.2, 3, 1], vertical_alignment="center")
 
-    with left:
-        st.markdown(
-            f'<div class="navbar-logo">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>',
-            unsafe_allow_html=True,
-        )
+        with left:
+            st.markdown(
+                f'<div class="navbar-logo">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>',
+                unsafe_allow_html=True,
+            )
 
-    with center:
-        st.markdown(
-            f'<div class="navbar-links">{nav_links_html}</div>',
-            unsafe_allow_html=True,
-        )
+        with center:
+            st.markdown(
+                f'<div class="navbar-links">{nav_links_html}</div>',
+                unsafe_allow_html=True,
+            )
 
-    with right:
-        if st.button("🚀 Launch App", key="navbar_launch", width="stretch", type="primary"):
-            _launch_app()
+        with right:
+            if st.button("🚀 Launch App", key="navbar_launch", width="stretch", type="primary"):
+                _launch_app()
 
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -667,9 +698,15 @@ def _render_navbar():
 def show_landing():
     """Render the fully responsive landing page."""
 
-    _inject_landing_css()
-    _inject_landing_nav_js()
-    _render_navbar()
+    # The CSS injection, the (invisible, height=0) nav-JS iframe, and the
+    # navbar markup are each separate top-level elements in Streamlit's eyes,
+    # so by default they'd each get its own flex "gap" from the surrounding
+    # vertical block — dead space stacking up above the sticky navbar even
+    # though none of them render a visible box. gap=None removes it.
+    with st.container(gap=None):
+        _inject_landing_css()
+        _inject_landing_nav_js()
+        _render_navbar()
 
     # ── HERO ──
     st.markdown(
