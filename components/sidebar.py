@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 from utils.analysis.loader import load_dataset, SUPPORTED_EXTENSIONS
 from utils.persistence import delete_session
@@ -18,7 +19,234 @@ PAGES = {
 }
 
 
+def _inject_mobile_sidebar_css():
+    """Responsive CSS: hamburger on mobile, normal sidebar on desktop."""
+
+    st.markdown(
+        """
+        <style>
+        /* ── MOBILE: hide sidebar off-screen, show hamburger ── */
+        @media (max-width: 768px) {
+
+            [data-testid="stSidebar"] {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                z-index: 9999 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                width: 290px !important;
+                min-width: 290px !important;
+                max-width: 290px !important;
+                transform: translateX(-100%) !important;
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                background: #0D0A1A !important;
+                padding-top: 16px !important;
+                box-shadow: none !important;
+            }
+            [data-testid="stSidebar"].mobile-open {
+                transform: translateX(0) !important;
+                box-shadow: 8px 0 40px rgba(0,0,0,0.55) !important;
+            }
+
+            /* dark backdrop behind sidebar */
+            .sb-backdrop {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 9998;
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+            }
+            .sb-backdrop.active { display: block; }
+
+            /* hamburger button */
+            .sb-hamburger {
+                display: flex !important;
+                position: fixed;
+                top: 12px;
+                left: 12px;
+                z-index: 10000;
+                width: 44px;
+                height: 44px;
+                border-radius: 11px;
+                background: rgba(236, 72, 153, 0.14);
+                border: 1px solid rgba(236, 72, 153, 0.35);
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background 0.15s ease, transform 0.1s ease;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .sb-hamburger:active {
+                background: rgba(236, 72, 153, 0.32);
+                transform: scale(0.93);
+            }
+            .sb-hamburger svg {
+                width: 20px; height: 20px;
+                pointer-events: none;
+            }
+
+            /* close X inside sidebar */
+            .sb-close {
+                display: none !important;
+                position: absolute;
+                top: 14px;
+                right: 14px;
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                background: rgba(255,255,255,0.06);
+                border: 1px solid rgba(255,255,255,0.1);
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 10001;
+                color: #D8CFEF;
+                font-size: 15px;
+                line-height: 1;
+                -webkit-tap-highlight-color: transparent;
+                transition: background 0.12s ease;
+            }
+            .sb-close:active {
+                background: rgba(255,255,255,0.14);
+            }
+
+            /* full-width main content */
+            [data-testid="stMain"] {
+                margin-left: 0 !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+        }
+
+        /* ── DESKTOP: hide mobile-only elements ── */
+        @media (min-width: 769px) {
+            .sb-hamburger,
+            .sb-backdrop,
+            .sb-close {
+                display: none !important;
+            }
+        }
+        </style>
+
+        <!-- hamburger icon -->
+        <div class="sb-hamburger" id="sbHamburger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F9A8D4"
+                 stroke-width="2.2" stroke-linecap="round">
+                <line x1="4" y1="6" x2="20" y2="6"/>
+                <line x1="4" y1="12" x2="20" y2="12"/>
+                <line x1="4" y1="18" x2="20" y2="18"/>
+            </svg>
+        </div>
+
+        <!-- backdrop overlay -->
+        <div class="sb-backdrop" id="sbBackdrop"></div>
+
+        <!-- close button (will be moved into sidebar by JS) -->
+        <div class="sb-close" id="sbClose">✕</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _inject_mobile_sidebar_js():
+    """Zero-height iframe script that controls the parent DOM."""
+
+    components.html(
+        """
+        <script>
+        (function () {
+            try {
+                var doc = window.parent.document;
+            } catch(e) {
+                return; // Cross-origin blocked, abort gracefully
+            }
+
+            // Use a flag on the parent window so we only attach delegation listeners ONCE.
+            // This survives Streamlit iframe destruction/recreation on re-runs.
+            if (window.parent._sbMobileBound) return;
+            window.parent._sbMobileBound = true;
+
+            function openSidebar() {
+                var sb = doc.querySelector('[data-testid="stSidebar"]');
+                var bd = doc.getElementById('sbBackdrop');
+                var cl = doc.getElementById('sbClose');
+                if (!sb) return;
+                sb.classList.add('mobile-open');
+                if (bd) bd.classList.add('active');
+                if (cl) {
+                    cl.style.display = 'flex';
+                    if (!sb.contains(cl)) {
+                        sb.insertBefore(cl, sb.firstChild);
+                    }
+                }
+            }
+
+            function closeSidebar() {
+                var sb = doc.querySelector('[data-testid="stSidebar"]');
+                var bd = doc.getElementById('sbBackdrop');
+                var cl = doc.getElementById('sbClose');
+                if (sb) sb.classList.remove('mobile-open');
+                if (bd) bd.classList.remove('active');
+                if (cl) cl.style.display = 'none';
+            }
+
+            // EVENT DELEGATION on document (capture phase)
+            // This ensures clicks work perfectly even if Streamlit completely 
+            // destroys and recreates the HTML elements on re-renders.
+            doc.addEventListener('click', function (e) {
+                if (e.target.closest('#sbHamburger')) {
+                    e.stopPropagation();
+                    var sb = doc.querySelector('[data-testid="stSidebar"]');
+                    if (sb && sb.classList.contains('mobile-open')) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
+                    return;
+                }
+                if (e.target.closest('#sbBackdrop')) {
+                    closeSidebar();
+                    return;
+                }
+                if (e.target.closest('#sbClose')) {
+                    e.stopPropagation();
+                    closeSidebar();
+                    return;
+                }
+            }, true);
+
+            // Auto-close sidebar when user taps a nav radio on mobile
+            doc.addEventListener('change', function (e) {
+                if (e.target.matches('[data-testid="stSidebar"] input[type="radio"]')) {
+                    if (window.parent.innerWidth <= 768) {
+                        setTimeout(closeSidebar, 150);
+                    }
+                }
+            }, true);
+
+            // Close on rotate / resize past breakpoint
+            window.parent.addEventListener('resize', function () {
+                if (window.parent.innerWidth > 768) closeSidebar();
+            });
+
+        })();
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+
+
 def sidebar():
+
+    _inject_mobile_sidebar_css()
+    _inject_mobile_sidebar_js()
 
     st.sidebar.markdown(
         """
@@ -47,13 +275,6 @@ def sidebar():
 
     if uploaded is not None:
 
-        # Streamlit's file_uploader keeps returning the SAME file object on every
-        # rerun (button clicks, checkbox toggles, st.rerun() after cleaning, etc.),
-        # not just the moment it's uploaded. Without this guard, every rerun would
-        # silently reload the original file and wipe out any cleaning that was
-        # just applied. We only (re)load when the file is actually new — `file_id`
-        # is assigned per upload action, so it changes even if the user re-uploads
-        # a same-named, same-sized file after editing it (name+size would miss that).
         file_fingerprint = uploaded.file_id
 
         if st.session_state.get("uploaded_file_fingerprint") != file_fingerprint:
@@ -75,7 +296,6 @@ def sidebar():
 
                     st.sidebar.error(f"⚠️ Couldn't load this file: {exc}")
 
-                    # Don't retry-load this same broken file on every rerun.
                     st.session_state["uploaded_file_fingerprint"] = file_fingerprint
 
                 else:
@@ -98,11 +318,6 @@ def sidebar():
 
                     st.session_state["uploaded_file_name"] = uploaded.name
 
-                    # A brand-new file can coincidentally reuse the same row
-                    # labels (e.g. both start at 0..N-1) as whatever was
-                    # scanned before, which would otherwise make stale
-                    # flagged-outlier indices appear to "match" unrelated
-                    # rows in the new dataset.
                     st.session_state.pop("outlier_scan_result", None)
 
                     st.toast(
@@ -114,11 +329,6 @@ def sidebar():
 
     page_labels = list(PAGES.keys())
 
-    # Restore the last-visited page from the URL so a browser refresh keeps
-    # the user where they were instead of snapping back to the Dashboard.
-    # (Only affects the widget's initial value — once the radio has been
-    # interacted with in this session, Streamlit's own widget state takes
-    # over and this index is ignored, which is what we want.)
     remembered_page = st.query_params.get("page", "home")
 
     default_index = next(
@@ -170,8 +380,6 @@ def sidebar():
 
             st.session_state.pop("outlier_scan_result", None)
 
-            # Force the file_uploader widget to reset visually too, instead
-            # of continuing to display the now-cleared file's name.
             st.session_state["uploader_version"] = uploader_version + 1
 
             st.toast("Dataset removed", icon="🗑️")

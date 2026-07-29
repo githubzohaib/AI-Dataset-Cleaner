@@ -45,7 +45,7 @@ if "dataset" not in st.session_state:
     st.session_state["original_dataset"] = restored["original_dataset"] if restored else None
     st.session_state["cleaning_report"] = restored["cleaning_report"] if restored else []
     st.session_state["uploaded_file_name"] = restored["source_name"] if restored else None
-    st.session_state["_persisted_dataset_id"] = id(st.session_state["dataset"])
+    st.session_state["_persisted_dataset_ref"] = st.session_state["dataset"]
 
 if "show_landing" not in st.session_state:
     # A browser refresh starts a brand-new Streamlit session, wiping
@@ -135,10 +135,19 @@ else:
     # then reruns — so comparing object identity here is a cheap, reliable
     # way to write to disk only when something actually changed, instead of
     # re-pickling on every single unrelated rerun (widget toggles, etc.).
+    #
+    # NOTE: this compares the object itself via `is`, not `id()`. `id()` is a
+    # memory address, and once the old dataframe object is garbage-collected
+    # (which can happen on any later rerun once nothing else references it),
+    # CPython is free to reuse that exact address for a brand-new object —
+    # causing `id(new_df) == id(old_df)` by coincidence and silently
+    # skipping the save even though the dataset genuinely changed. Holding a
+    # live reference in `_persisted_dataset_ref` prevents that object from
+    # ever being collected in the first place, so `is` comparison is safe.
     current_dataset = st.session_state.get("dataset")
 
     if current_dataset is not None and (
-        st.session_state.get("_persisted_dataset_id") != id(current_dataset)
+        st.session_state.get("_persisted_dataset_ref") is not current_dataset
     ):
 
         save_session(
@@ -149,4 +158,4 @@ else:
             st.session_state.get("uploaded_file_name"),
         )
 
-        st.session_state["_persisted_dataset_id"] = id(current_dataset)
+        st.session_state["_persisted_dataset_ref"] = current_dataset
