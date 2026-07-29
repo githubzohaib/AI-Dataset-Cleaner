@@ -1,6 +1,7 @@
 import time
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 
 FEATURES = [
@@ -46,19 +47,13 @@ ORB_SVG = """
       <feGaussianBlur stdDeviation="8"/>
     </filter>
   </defs>
-
   <circle cx="160" cy="170" r="140" fill="url(#orbGlow)" filter="url(#blurSoft)"/>
-
   <rect x="70" y="90" width="180" height="160" rx="46" fill="url(#orbBody)" stroke="#EC4899" stroke-opacity="0.35"/>
-
   <circle cx="120" cy="165" r="20" fill="url(#eyeGlow)"/>
   <circle cx="200" cy="165" r="20" fill="url(#eyeGlow)"/>
-
   <path d="M120 210 Q160 230 200 210" stroke="#EC4899" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
-
   <line x1="160" y1="90" x2="160" y2="65" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>
   <circle cx="160" cy="58" r="7" fill="#EC4899"/>
-
   <rect x="55" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#EC4899" stroke-opacity="0.35"/>
   <rect x="251" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#EC4899" stroke-opacity="0.35"/>
 </svg>
@@ -109,7 +104,6 @@ def _inject_landing_css():
             padding-top: 0 !important;
             margin-top: 0 !important;
         }
-        /* remove the block-container background and padding so no box appears behind navbar */
         .block-container {
             padding-top: 0 !important;
             padding-bottom: 2rem !important;
@@ -169,9 +163,86 @@ def _inject_landing_css():
             opacity: 1;
             color: #F9A8D4;
         }
-        /* make the navbar button pill-shaped */
         div[data-testid="stButton"] button[kind="primary"] {
             border-radius: 999px !important;
+        }
+
+        /* ── MOBILE HAMBURGER (inside navbar-wrap, hidden on desktop) ── */
+        .nav-hamburger {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(236, 72, 153, 0.12);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.15s ease;
+        }
+        .nav-hamburger:active {
+            background: rgba(236, 72, 153, 0.3);
+        }
+        .nav-hamburger svg {
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+        }
+
+        /* ── MOBILE DROPDOWN MENU ── */
+        .nav-mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(13, 10, 26, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(236, 72, 153, 0.2);
+            padding: 18px 24px 22px 24px;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 1000;
+        }
+        .nav-mobile-menu.open {
+            display: flex;
+        }
+        .nav-mobile-menu a {
+            color: #D8CFEF;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            transition: background 0.12s ease, color 0.12s ease;
+        }
+        .nav-mobile-menu a:hover,
+        .nav-mobile-menu a:active {
+            background: rgba(236, 72, 153, 0.1);
+            color: #F9A8D4;
+        }
+        .nav-mobile-divider {
+            height: 1px;
+            background: rgba(236, 72, 153, 0.15);
+            margin: 8px 0;
+        }
+        .nav-mobile-cta a {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, #DB2777, #EC4899) !important;
+            color: #fff !important;
+            border-radius: 999px;
+            padding: 11px 20px !important;
+            font-weight: 700;
+        }
+        .nav-mobile-cta a:hover,
+        .nav-mobile-cta a:active {
+            opacity: 0.9;
+            background: linear-gradient(135deg, #DB2777, #EC4899) !important;
+            color: #fff !important;
         }
 
         /* ── HERO ── */
@@ -356,11 +427,166 @@ def _inject_landing_css():
             height: 14px;
             background: rgba(236, 72, 153, 0.25);
         }
+
+        /* ══════════════════════════════════════════════
+           RESPONSIVE — MOBILE BREAKPOINTS
+           ══════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+
+            /* hide the Streamlit column divs inside navbar on mobile */
+            .navbar-wrap > [data-testid="stHorizontalBlock"] {
+                display: none !important;
+            }
+
+            /* show hamburger */
+            .nav-hamburger {
+                display: flex;
+            }
+
+            .navbar-wrap {
+                padding: 12px 16px;
+            }
+
+            /* Hero scales down */
+            .landing-title {
+                font-size: 32px;
+                line-height: 1.15;
+            }
+            .landing-hero p.landing-subtitle {
+                font-size: 15px;
+            }
+            .landing-badge {
+                font-size: 11px;
+                padding: 5px 14px;
+            }
+            .landing-hero {
+                padding: 20px 16px 14px 16px;
+            }
+
+            /* Steps stack vertically */
+            .landing-steps {
+                flex-direction: column;
+                gap: 16px;
+                margin: 14px 0 28px 0;
+            }
+
+            /* Section headings */
+            .section-heading {
+                font-size: 22px;
+                margin: 6px 0 20px 0;
+            }
+
+            /* Feature cards */
+            .feature-card {
+                padding: 20px 16px;
+            }
+            .feature-icon {
+                font-size: 26px;
+            }
+            .feature-title {
+                font-size: 15px;
+            }
+            .feature-desc {
+                font-size: 13px;
+            }
+
+            /* Footer stacks vertically, centered */
+            .footer-wrap {
+                padding: 24px 16px 18px 16px;
+                margin-top: 40px;
+            }
+            .footer-inner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 18px;
+            }
+            .footer-brand-name {
+                justify-content: center;
+                font-size: 14px;
+            }
+            .footer-links {
+                justify-content: center;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+            .footer-links a {
+                font-size: 12.5px;
+            }
+            .footer-divider {
+                display: none;
+            }
+            .footer-links a:not(:last-child)::after {
+                content: " · ";
+                color: rgba(236, 72, 153, 0.35);
+                margin-left: 6px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .landing-title {
+                font-size: 26px;
+            }
+            .landing-hero p.landing-subtitle {
+                font-size: 14px;
+            }
+            .navbar-logo {
+                font-size: 14px;
+            }
+        }
         </style>
         <div class="landing-glow"></div>
         <div id="top"></div>
         """,
         unsafe_allow_html=True,
+    )
+
+
+def _inject_landing_nav_js():
+    """Hamburger toggle via event delegation — survives Streamlit re-renders."""
+
+    components.html(
+        """
+        <script>
+        (function () {
+            try { var doc = window.parent.document; } catch(e) { return; }
+
+            if (window.parent._navMobileBound) return;
+            window.parent._navMobileBound = true;
+
+            doc.addEventListener('click', function (e) {
+                var hamburger = e.target.closest('.nav-hamburger');
+                var menu = doc.querySelector('.nav-mobile-menu');
+
+                if (hamburger) {
+                    e.stopPropagation();
+                    if (menu) menu.classList.toggle('open');
+                    return;
+                }
+
+                if (e.target.closest('.nav-mobile-menu a')) {
+                    if (menu) menu.classList.remove('open');
+                    return;
+                }
+
+                if (menu && menu.classList.contains('open')) {
+                    if (!e.target.closest('.nav-mobile-menu') && !e.target.closest('.nav-hamburger')) {
+                        menu.classList.remove('open');
+                    }
+                }
+            }, true);
+
+            window.parent.addEventListener('resize', function () {
+                if (window.parent.innerWidth > 768) {
+                    var menu = doc.querySelector('.nav-mobile-menu');
+                    if (menu) menu.classList.remove('open');
+                }
+            });
+        })();
+        </script>
+        """,
+        height=0,
+        width=0,
     )
 
 
@@ -375,13 +601,48 @@ def _launch_app():
 
 
 def _render_navbar():
-    """Sticky navbar — no background box, transparent over the page glow."""
+    """Desktop: Streamlit columns. Mobile: columns hidden, hamburger + dropdown shown."""
 
     nav_links_html = "".join(
         f'<a href="{href}">{label}</a>' for label, href in NAV_LINKS
     )
 
+    mobile_links_html = "".join(
+        f'<a href="{href}">{label}</a>' for label, href in NAV_LINKS
+    )
+
     st.markdown('<div class="navbar-wrap">', unsafe_allow_html=True)
+
+    # Hamburger button (hidden on desktop via CSS, shown on mobile)
+    st.markdown(
+        """
+        <div class="nav-hamburger" id="navHamburger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F9A8D4"
+                 stroke-width="2.2" stroke-linecap="round">
+                <line x1="4" y1="6" x2="20" y2="6"/>
+                <line x1="4" y1="12" x2="20" y2="12"/>
+                <line x1="4" y1="18" x2="20" y2="18"/>
+            </svg>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Mobile dropdown menu (hidden on desktop via CSS, toggled by JS on mobile)
+    st.markdown(
+        f"""
+        <div class="nav-mobile-menu" id="navMobileMenu">
+            {mobile_links_html}
+            <div class="nav-mobile-divider"></div>
+            <div class="nav-mobile-cta">
+                <a href="#get-started">Launch App</a>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Desktop layout using Streamlit columns (hidden on mobile via CSS)
     left, center, right = st.columns([1.2, 3, 1], vertical_alignment="center")
 
     with left:
@@ -404,9 +665,10 @@ def _render_navbar():
 
 
 def show_landing():
-    """Render the landing page. Sets session flag and reruns when user clicks Launch."""
+    """Render the fully responsive landing page."""
 
     _inject_landing_css()
+    _inject_landing_nav_js()
     _render_navbar()
 
     # ── HERO ──
