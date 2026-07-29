@@ -97,17 +97,24 @@ def _inject_landing_css():
         }
         .stApp {
             margin-top: 0 !important;
+            padding-top: 0 !important;
             background: transparent !important;
         }
         [data-testid="stAppViewContainer"] {
             padding-top: 0 !important;
+            margin-top: 0 !important;
             background: transparent !important;
+        }
+        [data-testid="stMain"] {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
         }
         /* remove the block-container background and padding so no box appears behind navbar */
         .block-container {
             padding-top: 0 !important;
             padding-bottom: 2rem !important;
             max-width: 100% !important;
+            margin-top: 0 !important;
             background: transparent !important;
             box-shadow: none !important;
             border: none !important;
@@ -118,6 +125,7 @@ def _inject_landing_css():
             position: sticky;
             top: 0;
             z-index: 999;
+            margin: 0 !important;
             padding: 14px 34px;
             display: flex;
             align-items: center;
