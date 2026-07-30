@@ -21,7 +21,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-CACHE_DIR = Path(tempfile.gettempdir()) / "ai-dataset-cleaner-sessions"
+CACHE_DIR = Path(tempfile.gettempdir()) / "raw2ready-ai-sessions"
 
 MAX_AGE_SECONDS = 24 * 60 * 60
 

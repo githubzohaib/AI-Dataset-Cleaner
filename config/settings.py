@@ -2,7 +2,7 @@
 Global configuration for the application.
 """
 
-PAGE_TITLE = "AI Dataset Cleaner"
+PAGE_TITLE = "Raw2Ready AI"
 
 PAGE_ICON = "🧹"
 

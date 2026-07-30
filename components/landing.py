@@ -615,7 +615,7 @@ def _launch_app():
 
     st.session_state["show_landing"] = False
     st.query_params["app"] = "1"
-    st.toast("Welcome to AI Dataset Cleaner!", icon="🚀")
+    st.toast("Welcome to Raw2Ready AI!", icon="🚀")
     st.rerun()
 
 
@@ -640,7 +640,7 @@ def _render_navbar():
     st.markdown(
         f"""
         <div class="navbar-mobile-bar">
-            <div class="navbar-logo">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>
+            <div class="navbar-logo">{LOGO_SVG}<span>Raw2Ready AI</span></div>
             <div class="nav-hamburger" id="navHamburger">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#F9A8D4"
                      stroke-width="2.2" stroke-linecap="round">
@@ -678,7 +678,7 @@ def _render_navbar():
 
         with left:
             st.markdown(
-                f'<div class="navbar-logo">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>',
+                f'<div class="navbar-logo">{LOGO_SVG}<span>Raw2Ready AI</span></div>',
                 unsafe_allow_html=True,
             )
 
@@ -746,7 +746,7 @@ def show_landing():
 
     # ── WHY CHOOSE ──
     st.markdown('<div id="why-choose"></div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-heading">Why Choose AI Dataset Cleaner?</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-heading">Why Choose Raw2Ready AI?</div>', unsafe_allow_html=True)
 
     left_col, mid_col, right_col = st.columns([1, 1, 1])
 
@@ -809,7 +809,7 @@ def show_landing():
         f"""
         <div class="footer-wrap">
             <div class="footer-inner">
-                <div class="footer-brand-name">{LOGO_SVG}<span>AI Dataset Cleaner</span></div>
+                <div class="footer-brand-name">{LOGO_SVG}<span>Raw2Ready AI</span></div>
                 <div class="footer-links">
                     <a href="#">Terms</a>
                     <div class="footer-divider"></div>
