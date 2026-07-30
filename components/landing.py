@@ -239,21 +239,6 @@ def _inject_landing_css():
             background: rgba(236, 72, 153, 0.15);
             margin: 8px 0;
         }
-        .nav-mobile-cta a {
-            display: block;
-            text-align: center;
-            background: linear-gradient(135deg, #DB2777, #EC4899) !important;
-            color: #fff !important;
-            border-radius: 999px;
-            padding: 11px 20px !important;
-            font-weight: 700;
-        }
-        .nav-mobile-cta a:hover,
-        .nav-mobile-cta a:active {
-            opacity: 0.9;
-            background: linear-gradient(135deg, #DB2777, #EC4899) !important;
-            color: #fff !important;
-        }
 
         /* ── HERO ── */
         .landing-hero {
@@ -654,15 +639,13 @@ def _render_navbar():
         unsafe_allow_html=True,
     )
 
-    # Mobile dropdown menu (hidden on desktop via CSS, toggled by JS on mobile)
+    # Mobile dropdown menu (hidden on desktop via CSS, toggled by JS on mobile).
+    # No CTA button here on purpose — the mobile Launch button lives only in
+    # the hero section, not duplicated into this nav dropdown.
     st.markdown(
         f"""
         <div class="nav-mobile-menu" id="navMobileMenu">
             {mobile_links_html}
-            <div class="nav-mobile-divider"></div>
-            <div class="nav-mobile-cta">
-                <a href="#get-started">Launch App</a>
-            </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -689,7 +672,7 @@ def _render_navbar():
             )
 
         with right:
-            if st.button("🚀 Launch App", key="navbar_launch", width="stretch", type="primary"):
+            if st.button("🚀 Start Cleaning", key="navbar_launch", width="stretch", type="primary"):
                 _launch_app()
 
     st.markdown("</div>", unsafe_allow_html=True)
@@ -728,7 +711,7 @@ def show_landing():
     _, mid, _ = st.columns([1, 1, 1])
 
     with mid:
-        if st.button("🚀 Launch App", key="hero_launch", width="stretch", type="primary"):
+        if st.button("🚀 Start Cleaning", key="hero_launch", width="stretch", type="primary"):
             _launch_app()
 
     st.markdown(
