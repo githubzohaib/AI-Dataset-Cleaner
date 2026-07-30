@@ -93,38 +93,6 @@ def _inject_mobile_sidebar_css():
                 pointer-events: none;
             }
 
-            /* close X inside sidebar — shown only once openSidebar() has
-               moved it inside .mobile-open, driven by the class alone (see
-               rule below) rather than the JS inline style that used to try
-               to flip this: an inline style can never win against this
-               !important rule, so the X was never actually visible. */
-            .sb-close {
-                display: none !important;
-                position: absolute;
-                top: 14px;
-                right: 14px;
-                width: 32px;
-                height: 32px;
-                border-radius: 8px;
-                background: rgba(255,255,255,0.06);
-                border: 1px solid rgba(255,255,255,0.1);
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                z-index: 10001;
-                color: #D8CFEF;
-                font-size: 15px;
-                line-height: 1;
-                -webkit-tap-highlight-color: transparent;
-                transition: background 0.12s ease;
-            }
-            .sb-close:active {
-                background: rgba(255,255,255,0.14);
-            }
-            [data-testid="stSidebar"].mobile-open .sb-close {
-                display: flex !important;
-            }
-
             /* full-width main content */
             [data-testid="stMain"] {
                 margin-left: 0 !important;
@@ -148,8 +116,7 @@ def _inject_mobile_sidebar_css():
                sidebar arrow to match the app's pink theme ── */
         @media (min-width: 769px) {
             .sb-hamburger,
-            .sb-backdrop,
-            .sb-close {
+            .sb-backdrop {
                 display: none !important;
             }
 
@@ -202,9 +169,6 @@ def _inject_mobile_sidebar_css():
 
         <!-- backdrop overlay -->
         <div class="sb-backdrop" id="sbBackdrop"></div>
-
-        <!-- close button (will be moved into sidebar by JS) -->
-        <div class="sb-close" id="sbClose">✕</div>
         """,
         unsafe_allow_html=True,
     )
@@ -231,13 +195,9 @@ def _inject_mobile_sidebar_js():
             function openSidebar() {
                 var sb = doc.querySelector('[data-testid="stSidebar"]');
                 var bd = doc.getElementById('sbBackdrop');
-                var cl = doc.getElementById('sbClose');
                 if (!sb) return;
                 sb.classList.add('mobile-open');
                 if (bd) bd.classList.add('active');
-                if (cl && !sb.contains(cl)) {
-                    sb.insertBefore(cl, sb.firstChild);
-                }
             }
 
             function closeSidebar() {
@@ -262,11 +222,6 @@ def _inject_mobile_sidebar_js():
                     return;
                 }
                 if (e.target.closest('#sbBackdrop')) {
-                    closeSidebar();
-                    return;
-                }
-                if (e.target.closest('#sbClose')) {
-                    e.stopPropagation();
                     closeSidebar();
                     return;
                 }
