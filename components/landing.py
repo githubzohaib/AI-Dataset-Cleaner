@@ -15,8 +15,8 @@ FEATURES = [
 
 WHY_ITEMS = [
     ("01", "Your Data Stays Yours", "Everything runs in your session — nothing is stored or shared."),
-    ("02", "Enterprise-Grade Cleaning", "Isolation Forest and statistical imputation, not just find-and-replace."),
     ("03", "See Before You Trust", "Full before/after comparison so you know exactly what changed."),
+    ("02", "Enterprise-Grade Cleaning", "Isolation Forest and statistical imputation, not just find-and-replace."),
     ("04", "Export Anywhere", "One click to CSV or Excel — ready for your next tool."),
 ]
 
