@@ -1,3 +1,5 @@
+import uuid
+
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -391,6 +393,45 @@ def sidebar():
     else:
 
         st.sidebar.info("No dataset loaded yet.")
+
+    if st.sidebar.button(
+        "🔄 Start New Session",
+        width='stretch',
+        help="Clears the uploaded dataset, cleaning history and cleaning "
+             "options, and starts over with a completely fresh session.",
+    ):
+
+        # Wipe this session's disk cache (dataset blob + cleaning-options
+        # file) before minting a new session id — otherwise the old id's
+        # cache entries would just sit there until the 24h sweep.
+        delete_session(st.session_state.get("session_id"))
+
+        # Bump forward (never reuse/reset to 0) so the file_uploader widget
+        # gets a key it has genuinely never had before — matches the same
+        # reasoning as "Remove Dataset" below, needed because
+        # st.session_state.clear() below would otherwise make this default
+        # back to 0, which the browser's widget state may already know.
+        next_uploader_version = st.session_state.get("uploader_version", 0) + 1
+
+        # A full reset, not just the dataset fields: session_state.clear()
+        # also drops cleaning options, scan results, and every other
+        # transient key, so "Start New Session" genuinely means starting
+        # over rather than a partial reset.
+        st.session_state.clear()
+
+        st.session_state["session_id"] = uuid.uuid4().hex
+        st.session_state["uploader_version"] = next_uploader_version
+
+        # Reset the URL too: a fresh sid, dropped page (back to the
+        # dashboard home), and "app=1" so the user stays inside the app
+        # instead of bouncing back to the landing gate.
+        st.query_params.clear()
+        st.query_params["sid"] = st.session_state["session_id"]
+        st.query_params["app"] = "1"
+
+        st.toast("Started a new session", icon="🔄")
+
+        st.rerun()
 
     st.sidebar.divider()
 

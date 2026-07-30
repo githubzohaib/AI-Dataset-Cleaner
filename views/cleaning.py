@@ -17,31 +17,39 @@ def show_page():
 
     df = get_dataset()
 
+    # Each widget below is given a `key=` that matches an entry in
+    # CLEANING_OPTION_DEFAULTS (utils/persistence.py). app.py seeds
+    # st.session_state with the persisted (or default) value for that key
+    # before this page ever runs, so the widget picks it up automatically —
+    # that's why no `value=`/`index=` argument is passed here; supplying one
+    # would just be ignored once the key already exists in session_state,
+    # and would be misleading about where the real default lives.
     strategy = st.selectbox(
         "Numerical Missing Value Strategy",
         ["Mean", "Median"],
+        key="opt_numeric_strategy",
     )
 
     remove_duplicates = st.checkbox(
         "Remove Duplicate Rows",
-        value=True,
+        key="opt_remove_duplicates",
     )
 
     remove_outliers = st.checkbox(
         "Remove ML Outliers",
-        value=True,
+        key="opt_remove_outliers",
     )
 
     drop_columns = st.checkbox(
         "Drop Columns With Too Many Missing Values",
-        value=False,
+        key="opt_drop_columns",
     )
 
     threshold = st.slider(
         "Missing Value Threshold (%)",
         10,
         90,
-        60,
+        key="opt_missing_threshold",
     )
 
     col1, col2 = st.columns(2)

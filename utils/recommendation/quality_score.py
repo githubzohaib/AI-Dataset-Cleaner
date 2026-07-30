@@ -3,8 +3,14 @@ Dataset Quality Score.
 """
 
 import pandas as pd
+import streamlit as st
 
 
+# A pure function of the dataframe's content — caching means a browser
+# refresh (which restores the same dataset from disk) or navigating back to
+# this page recomputes nothing; Streamlit hits the cache instead of
+# re-scanning every cell.
+@st.cache_data(show_spinner=False)
 def calculate_quality_score(df: pd.DataFrame):
 
     score = 100

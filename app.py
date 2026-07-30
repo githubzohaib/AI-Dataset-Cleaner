@@ -13,7 +13,14 @@ from components.sidebar import sidebar
 from components.home import show_home
 from components.landing import show_landing
 
-from utils.persistence import cleanup_stale_sessions, load_session, save_session
+from utils.persistence import (
+    CLEANING_OPTION_DEFAULTS,
+    cleanup_stale_sessions,
+    load_cleaning_options,
+    load_session,
+    save_cleaning_options,
+    save_session,
+)
 
 # ----------------------------
 # Session Identity (survives a browser refresh via the URL)
@@ -46,6 +53,21 @@ if "dataset" not in st.session_state:
     st.session_state["cleaning_report"] = restored["cleaning_report"] if restored else []
     st.session_state["uploaded_file_name"] = restored["source_name"] if restored else None
     st.session_state["_persisted_dataset_ref"] = st.session_state["dataset"]
+
+if "opt_numeric_strategy" not in st.session_state:
+
+    # Same idea as the dataset restore above: a fresh session_state after a
+    # refresh would otherwise silently reset every cleaning-tab widget
+    # (strategy, checkboxes, threshold) back to its hardcoded default,
+    # discarding choices the user already made. Seed session_state with the
+    # cached values *before* views/cleaning.py creates the widgets — a
+    # widget adopts whatever is already in st.session_state[key] instead of
+    # its own `index`/`value` argument, so this is all that's needed to
+    # restore them.
+    for option_key, option_value in load_cleaning_options(
+        st.session_state["session_id"]
+    ).items():
+        st.session_state[option_key] = option_value
 
 if "show_landing" not in st.session_state:
     # A browser refresh starts a brand-new Streamlit session, wiping
@@ -170,3 +192,21 @@ else:
         )
 
         st.session_state["_persisted_dataset_ref"] = current_dataset
+
+    # ----------------------------
+    # Persist cleaning options so they survive a browser refresh too
+    # ----------------------------
+    # Cheap dict-equality check against the last-saved snapshot, run on
+    # every rerun (unlike the dataset save above, this file is small enough
+    # that there's no need to be stingy about write frequency) — it just
+    # avoids re-writing the settings file when nothing actually changed.
+    current_options = {
+        key: st.session_state.get(key, default)
+        for key, default in CLEANING_OPTION_DEFAULTS.items()
+    }
+
+    if current_options != st.session_state.get("_persisted_options_snapshot"):
+
+        save_cleaning_options(st.session_state["session_id"], current_options)
+
+        st.session_state["_persisted_options_snapshot"] = current_options

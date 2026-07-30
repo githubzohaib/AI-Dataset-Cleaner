@@ -3,8 +3,10 @@ Dataset overview utilities.
 """
 
 import pandas as pd
+import streamlit as st
 
 
+@st.cache_data(show_spinner=False)
 def dataset_summary(df: pd.DataFrame) -> dict:
     """Return high-level dataset statistics."""
 
@@ -22,6 +24,7 @@ def dataset_summary(df: pd.DataFrame) -> dict:
     }
 
 
+@st.cache_data(show_spinner=False)
 def column_summary(df: pd.DataFrame) -> pd.DataFrame:
     """Return information about every column."""
 

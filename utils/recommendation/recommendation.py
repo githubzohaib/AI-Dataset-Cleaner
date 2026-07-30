@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 from typing import List, Tuple
 
 from utils.analysis.outliers import detect_outliers
@@ -12,6 +13,7 @@ IMBALANCE_THRESHOLD = 0.90              # feature imbalance threshold
 DATETIME_PARSE_SUCCESS_THRESHOLD = 0.8  # % of values that must parse as dates to flag a column
 
 
+@st.cache_data(show_spinner=False)  # pure function of df — cache survives page nav & refresh-restore
 def generate_ai_insights(
     df: pd.DataFrame,
     missing_error_threshold: int = MISSING_VALUE_ERROR_THRESHOLD,

@@ -4,8 +4,10 @@ Missing value analysis utilities.
 
 import pandas as pd
 import plotly.express as px
+import streamlit as st
 
 
+@st.cache_data(show_spinner=False)
 def missing_summary(df: pd.DataFrame) -> pd.DataFrame:
     """
     Create a summary of missing values.
@@ -26,6 +28,7 @@ def missing_summary(df: pd.DataFrame) -> pd.DataFrame:
     return summary
 
 
+@st.cache_data(show_spinner=False)
 def dataset_health_score(df: pd.DataFrame) -> float:
     """
     Calculate dataset health score.
@@ -43,6 +46,7 @@ def dataset_health_score(df: pd.DataFrame) -> float:
     return round(score, 2)
 
 
+@st.cache_data(show_spinner=False)
 def generate_recommendations(summary: pd.DataFrame):
 
     recommendations = []
@@ -77,6 +81,7 @@ def generate_recommendations(summary: pd.DataFrame):
     return recommendations
 
 
+@st.cache_data(show_spinner=False)
 def missing_bar_chart(summary: pd.DataFrame):
 
     fig = px.bar(
@@ -97,6 +102,7 @@ def missing_bar_chart(summary: pd.DataFrame):
     return fig
 
 
+@st.cache_data(show_spinner=False)
 def missing_heatmap(df: pd.DataFrame):
 
     fig = px.imshow(

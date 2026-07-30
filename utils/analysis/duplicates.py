@@ -3,8 +3,10 @@ Duplicate detection utilities.
 """
 
 import pandas as pd
+import streamlit as st
 
 
+@st.cache_data(show_spinner=False)
 def duplicate_summary(df: pd.DataFrame):
 
     duplicate_rows = df[df.duplicated()]

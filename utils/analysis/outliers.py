@@ -5,10 +5,17 @@ Machine Learning based outlier detection.
 import warnings
 
 import pandas as pd
+import streamlit as st
 
 from sklearn.ensemble import IsolationForest
 
 
+# The most expensive pure computation in the app (fits a model), and the one
+# most worth caching: outliers.py, insights.py and CleaningService all call
+# this on the same dataframe. `show_spinner=False` because every call site
+# already wraps its own action_status()/st.status() spinner — a second,
+# built-in cache_data spinner would just flash redundantly underneath it.
+@st.cache_data(show_spinner=False)
 def detect_outliers(df: pd.DataFrame):
     """
     Detect outliers using Isolation Forest.
