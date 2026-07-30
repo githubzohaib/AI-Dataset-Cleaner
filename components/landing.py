@@ -4,13 +4,71 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 
+# Monochrome line-icon set (all rendered in the same brand pink via
+# `currentColor` — only the shape changes per card) instead of multicolor
+# emoji, for a more modern/professional SaaS look.
+_ICON_MISSING = """
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/>
+    <line x1="12" y1="7.5" x2="12" y2="13"/>
+    <circle cx="12" cy="16.4" r="0.9" fill="currentColor" stroke="none"/>
+</svg>
+"""
+
+_ICON_DUPLICATE = """
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8" y="8" width="13" height="13" rx="2"/>
+    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+</svg>
+"""
+
+_ICON_OUTLIER = """
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/>
+    <line x1="12" y1="2" x2="12" y2="6"/>
+    <line x1="12" y1="18" x2="12" y2="22"/>
+    <line x1="2" y1="12" x2="6" y2="12"/>
+    <line x1="18" y1="12" x2="22" y2="12"/>
+    <circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/>
+</svg>
+"""
+
+_ICON_ANALYTICS = """
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 3v16a2 2 0 0 0 2 2h16"/>
+    <rect x="7" y="13" width="3" height="6" rx="0.8" fill="currentColor" stroke="none"/>
+    <rect x="12.5" y="8" width="3" height="11" rx="0.8" fill="currentColor" stroke="none"/>
+    <rect x="18" y="11" width="3" height="8" rx="0.8" fill="currentColor" stroke="none"/>
+</svg>
+"""
+
+_ICON_INSIGHTS = """
+<svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <path d="M12 2.5l1.7 5.9L19.5 10l-5.8 1.6L12 17.5l-1.7-5.9L4.5 10l5.8-1.6L12 2.5z"/>
+    <path d="M19 14.5l.75 2.5 2.5.75-2.5.75-.75 2.5-.75-2.5-2.5-.75 2.5-.75z"/>
+</svg>
+"""
+
+_ICON_EXPORT = """
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3v12"/>
+    <path d="M7 10l5 5 5-5"/>
+    <path d="M5 21h14"/>
+</svg>
+"""
+
 FEATURES = [
-    ("🕳️", "Smart Missing Values", "Detect gaps instantly and auto-fill with Mean, Median or Mode."),
-    ("📋", "Duplicate Detection", "Find and remove duplicate rows in a single click."),
-    ("🤖", "ML Outlier Detection", "Isolation Forest spots anomalies your eyes would miss."),
-    ("📈", "Rich Visual Analytics", "Histograms, box plots, bar charts and correlation heatmaps."),
-    ("💡", "AI Insights & Grading", "Get a quality score, letter grade, and plain-English recommendations."),
-    ("⬇️", "One-Click Export", "Download your cleaned dataset as CSV or Excel, ready to use."),
+    (_ICON_MISSING, "Smart Missing Values", "Detect gaps instantly and auto-fill with Mean, Median or Mode."),
+    (_ICON_DUPLICATE, "Duplicate Detection", "Find and remove duplicate rows in a single click."),
+    (_ICON_OUTLIER, "ML Outlier Detection", "Isolation Forest spots anomalies your eyes would miss."),
+    (_ICON_ANALYTICS, "Rich Visual Analytics", "Histograms, box plots, bar charts and correlation heatmaps."),
+    (_ICON_INSIGHTS, "AI Insights & Grading", "Get a quality score, letter grade, and plain-English recommendations."),
+    (_ICON_EXPORT, "One-Click Export", "Download your cleaned dataset as CSV or Excel, ready to use."),
 ]
 
 WHY_ITEMS = [
@@ -59,18 +117,41 @@ ORB_SVG = """
 </svg>
 """
 
-LOGO_SVG = """
+
+def _logo_svg(uid: str) -> str:
+    """Funnel mark: scattered "raw" dots narrowing through a funnel into a
+    single clean "ready" dot — a literal read of the Raw2Ready name, shown
+    at every screen size (mobile bar, desktop row, footer all call this).
+
+    Takes a unique id per call site: three copies of this SVG land in the
+    DOM at once (mobile bar, desktop row, footer), and a shared gradient id
+    would collide — when the first copy sits inside a `display:none`
+    ancestor (e.g. the desktop row while the mobile bar is showing), browsers
+    resolve every `url(#logoGrad)` reference to that hidden copy's gradient
+    and the icon silently fails to paint anywhere on the page.
+    """
+
+    gid = f"logoGrad-{uid}"
+
+    return f"""
 <svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="{gid}" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#F472B6"/>
       <stop offset="100%" stop-color="#DB2777"/>
     </linearGradient>
   </defs>
-  <rect x="1" y="1" width="28" height="28" rx="9" fill="url(#logoGrad)" opacity="0.18"/>
-  <rect x="1" y="1" width="28" height="28" rx="9" fill="none" stroke="url(#logoGrad)" stroke-width="1.4"/>
-  <circle cx="15" cy="15" r="6.5" fill="none" stroke="url(#logoGrad)" stroke-width="1.6"/>
-  <circle cx="15" cy="15" r="2.2" fill="url(#logoGrad)"/>
+  <rect x="1" y="1" width="28" height="28" rx="9" fill="url(#{gid})" opacity="0.18"/>
+  <rect x="1" y="1" width="28" height="28" rx="9" fill="none" stroke="url(#{gid})" stroke-width="1.4"/>
+
+  <circle cx="8.5" cy="7" r="1.1" fill="url(#{gid})" opacity="0.55"/>
+  <circle cx="14" cy="5.6" r="1.4" fill="url(#{gid})" opacity="0.85"/>
+  <circle cx="20" cy="7.4" r="1" fill="url(#{gid})" opacity="0.6"/>
+
+  <path d="M7.5 9.5 H21.5 L16.2 16.5 H12.8 Z" fill="none" stroke="url(#{gid})" stroke-width="1.5" stroke-linejoin="round"/>
+  <rect x="13" y="16.5" width="3" height="5.5" rx="1" fill="none" stroke="url(#{gid})" stroke-width="1.5"/>
+
+  <circle cx="14.5" cy="25" r="1.7" fill="url(#{gid})"/>
 </svg>
 """
 
@@ -310,9 +391,21 @@ def _inject_landing_css():
             box-shadow: 0 14px 34px rgba(236, 72, 153, 0.3);
             border-color: rgba(244, 114, 182, 0.6);
         }
-        .feature-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
+        .feature-icon-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            background: linear-gradient(135deg, rgba(236,72,153,0.20), rgba(219,39,119,0.06));
+            border: 1px solid rgba(236,72,153,0.35);
+            color: #F9A8D4;
+        }
+        .feature-icon-badge svg {
+            width: 24px;
+            height: 24px;
         }
         .feature-title {
             font-size: 17px;
@@ -484,8 +577,15 @@ def _inject_landing_css():
             .feature-card {
                 padding: 20px 16px;
             }
-            .feature-icon {
-                font-size: 26px;
+            .feature-icon-badge {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                margin-bottom: 12px;
+            }
+            .feature-icon-badge svg {
+                width: 20px;
+                height: 20px;
             }
             .feature-title {
                 font-size: 15px;
@@ -625,7 +725,7 @@ def _render_navbar():
     st.markdown(
         f"""
         <div class="navbar-mobile-bar">
-            <div class="navbar-logo">{LOGO_SVG}<span>Raw2Ready AI</span></div>
+            <div class="navbar-logo">{_logo_svg('mobile')}<span>Raw2Ready AI</span></div>
             <div class="nav-hamburger" id="navHamburger">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#F9A8D4"
                      stroke-width="2.2" stroke-linecap="round">
@@ -661,7 +761,7 @@ def _render_navbar():
 
         with left:
             st.markdown(
-                f'<div class="navbar-logo">{LOGO_SVG}<span>Raw2Ready AI</span></div>',
+                f'<div class="navbar-logo">{_logo_svg("desktop")}<span>Raw2Ready AI</span></div>',
                 unsafe_allow_html=True,
             )
 
@@ -778,7 +878,7 @@ def show_landing():
             st.markdown(
                 f"""
                 <div class="feature-card">
-                    <div class="feature-icon">{icon}</div>
+                    <div class="feature-icon-badge">{icon}</div>
                     <div class="feature-title">{title}</div>
                     <div class="feature-desc">{desc}</div>
                 </div>
@@ -792,7 +892,7 @@ def show_landing():
         f"""
         <div class="footer-wrap">
             <div class="footer-inner">
-                <div class="footer-brand-name">{LOGO_SVG}<span>Raw2Ready AI</span></div>
+                <div class="footer-brand-name">{_logo_svg('footer')}<span>Raw2Ready AI</span></div>
                 <div class="footer-links">
                     <a href="#">Terms</a>
                     <div class="footer-divider"></div>
