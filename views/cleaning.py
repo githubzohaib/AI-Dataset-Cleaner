@@ -18,30 +18,42 @@ def show_page():
     df = get_dataset()
 
     # Each widget below is given a `key=` that matches an entry in
-    # CLEANING_OPTION_DEFAULTS (utils/persistence.py). app.py seeds
-    # st.session_state with the persisted (or default) value for that key
-    # before this page ever runs, so the widget picks it up automatically —
-    # that's why no `value=`/`index=` argument is passed here; supplying one
-    # would just be ignored once the key already exists in session_state,
-    # and would be misleading about where the real default lives.
+    # CLEANING_OPTION_DEFAULTS (utils/persistence.py), AND an explicit
+    # `value=`/`index=` read from st.session_state (seeded by app.py before
+    # this page ever runs). The explicit value isn't redundant: Streamlit
+    # only pushes a session_state-restored value down to the *browser* when
+    # it was assigned in the exact same script run that creates the widget.
+    # Our seeding happens once, on the session's very first run — long
+    # before the user ever navigates to this page — so by the time these
+    # widgets are actually created for the first time in a real browser,
+    # that "just changed" signal is gone and Streamlit would otherwise fall
+    # back to each widget's hardcoded default (unchecked / slider minimum),
+    # even though st.session_state already holds the restored value
+    # internally. Passing the value explicitly closes that gap.
+    strategy_options = ["Mean", "Median"]
+
     strategy = st.selectbox(
         "Numerical Missing Value Strategy",
-        ["Mean", "Median"],
+        strategy_options,
+        index=strategy_options.index(st.session_state["opt_numeric_strategy"]),
         key="opt_numeric_strategy",
     )
 
     remove_duplicates = st.checkbox(
         "Remove Duplicate Rows",
+        value=st.session_state["opt_remove_duplicates"],
         key="opt_remove_duplicates",
     )
 
     remove_outliers = st.checkbox(
         "Remove ML Outliers",
+        value=st.session_state["opt_remove_outliers"],
         key="opt_remove_outliers",
     )
 
     drop_columns = st.checkbox(
         "Drop Columns With Too Many Missing Values",
+        value=st.session_state["opt_drop_columns"],
         key="opt_drop_columns",
     )
 
@@ -49,6 +61,7 @@ def show_page():
         "Missing Value Threshold (%)",
         10,
         90,
+        value=st.session_state["opt_missing_threshold"],
         key="opt_missing_threshold",
     )
 
