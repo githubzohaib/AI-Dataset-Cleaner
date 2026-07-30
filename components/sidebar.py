@@ -131,14 +131,61 @@ def _inject_mobile_sidebar_css():
                 padding-left: 1rem !important;
                 padding-right: 1rem !important;
             }
+
+            /* Streamlit's own native sidebar toggle sits at the same
+               top-left corner as .sb-hamburger and physically intercepts
+               taps meant for it (confirmed: it sat above .sb-hamburger in
+               the stacking order and swallowed the click). Hiding it here
+               leaves .sb-hamburger as the one working mobile toggle. */
+            [data-testid="stExpandSidebarButton"],
+            [data-testid="stSidebarCollapseButton"] {
+                display: none !important;
+                pointer-events: none !important;
+            }
         }
 
-        /* ── DESKTOP: hide mobile-only elements ── */
+        /* ── DESKTOP: hide mobile-only elements, restyle the native
+               sidebar arrow to match the app's pink theme ── */
         @media (min-width: 769px) {
             .sb-hamburger,
             .sb-backdrop,
             .sb-close {
                 display: none !important;
+            }
+
+            [data-testid="stExpandSidebarButton"],
+            [data-testid="stSidebarCollapseButton"] button {
+                background: rgba(236, 72, 153, 0.14) !important;
+                border: 1px solid rgba(236, 72, 153, 0.35) !important;
+                border-radius: 10px !important;
+                width: clamp(30px, 2.2vw, 40px) !important;
+                height: clamp(30px, 2.2vw, 40px) !important;
+                transition: background 0.2s ease,
+                            transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            [data-testid="stExpandSidebarButton"]:hover,
+            [data-testid="stSidebarCollapseButton"] button:hover {
+                background: rgba(236, 72, 153, 0.28) !important;
+                transform: scale(1.08) !important;
+            }
+            [data-testid="stExpandSidebarButton"]:active,
+            [data-testid="stSidebarCollapseButton"] button:active {
+                transform: scale(0.92) !important;
+            }
+
+            [data-testid="stExpandSidebarButton"] [data-testid="stIconMaterial"],
+            [data-testid="stSidebarCollapseButton"] [data-testid="stIconMaterial"] {
+                font-size: clamp(16px, 1.3vw, 20px) !important;
+                color: #F9A8D4 !important;
+                transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            /* nudge each arrow a little further in the direction it
+               points, instead of a flat static glyph */
+            [data-testid="stExpandSidebarButton"]:hover [data-testid="stIconMaterial"] {
+                transform: translateX(2px) rotate(-6deg);
+            }
+            [data-testid="stSidebarCollapseButton"] button:hover [data-testid="stIconMaterial"] {
+                transform: translateX(-2px) rotate(6deg);
             }
         }
         </style>
