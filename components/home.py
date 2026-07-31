@@ -1,5 +1,6 @@
 import streamlit as st
 
+from components.brand import logo_svg
 from components.cards import card
 from components.dataset_guard import get_dataset
 
@@ -7,9 +8,12 @@ from components.dataset_guard import get_dataset
 def show_home():
 
     st.markdown(
-        """
-        <h1 class="gradient-text">🧠 Raw2Ready AI</h1>
-        <p style="color:#F4A8CB; font-size:16px; margin-top:-10px;">
+        f"""
+        <div style="display:flex; align-items:center; gap:12px;">
+            {logo_svg('home', size=40)}
+            <h1 class="gradient-text" style="margin:0;">Raw2Ready AI</h1>
+        </div>
+        <p style="color:#F4A8CB; font-size:16px; margin-top:6px;">
             AI-Powered Dataset Cleaning &amp; Preprocessing Platform
         </p>
         """,

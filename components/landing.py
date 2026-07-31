@@ -3,6 +3,8 @@ import time
 import streamlit as st
 import streamlit.components.v1 as components
 
+from components.brand import logo_svg
+
 
 # Monochrome line-icon set (all rendered in the same brand pink via
 # `currentColor` — only the shape changes per card) instead of multicolor
@@ -114,44 +116,6 @@ ORB_SVG = """
   <circle cx="160" cy="58" r="7" fill="#EC4899"/>
   <rect x="55" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#EC4899" stroke-opacity="0.35"/>
   <rect x="251" y="150" width="14" height="34" rx="7" fill="#3B2E63" stroke="#EC4899" stroke-opacity="0.35"/>
-</svg>
-"""
-
-
-def _logo_svg(uid: str) -> str:
-    """Funnel mark: scattered "raw" dots narrowing through a funnel into a
-    single clean "ready" dot — a literal read of the Raw2Ready name, shown
-    at every screen size (mobile bar, desktop row, footer all call this).
-
-    Takes a unique id per call site: three copies of this SVG land in the
-    DOM at once (mobile bar, desktop row, footer), and a shared gradient id
-    would collide — when the first copy sits inside a `display:none`
-    ancestor (e.g. the desktop row while the mobile bar is showing), browsers
-    resolve every `url(#logoGrad)` reference to that hidden copy's gradient
-    and the icon silently fails to paint anywhere on the page.
-    """
-
-    gid = f"logoGrad-{uid}"
-
-    return f"""
-<svg width="30" height="30" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="{gid}" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F472B6"/>
-      <stop offset="100%" stop-color="#DB2777"/>
-    </linearGradient>
-  </defs>
-  <rect x="1" y="1" width="28" height="28" rx="9" fill="url(#{gid})" opacity="0.18"/>
-  <rect x="1" y="1" width="28" height="28" rx="9" fill="none" stroke="url(#{gid})" stroke-width="1.4"/>
-
-  <circle cx="8.5" cy="7" r="1.1" fill="url(#{gid})" opacity="0.55"/>
-  <circle cx="14" cy="5.6" r="1.4" fill="url(#{gid})" opacity="0.85"/>
-  <circle cx="20" cy="7.4" r="1" fill="url(#{gid})" opacity="0.6"/>
-
-  <path d="M7.5 9.5 H21.5 L16.2 16.5 H12.8 Z" fill="none" stroke="url(#{gid})" stroke-width="1.5" stroke-linejoin="round"/>
-  <rect x="13" y="16.5" width="3" height="5.5" rx="1" fill="none" stroke="url(#{gid})" stroke-width="1.5"/>
-
-  <circle cx="14.5" cy="25" r="1.7" fill="url(#{gid})"/>
 </svg>
 """
 
@@ -725,7 +689,7 @@ def _render_navbar():
     st.markdown(
         f"""
         <div class="navbar-mobile-bar">
-            <div class="navbar-logo">{_logo_svg('mobile')}<span>Raw2Ready AI</span></div>
+            <div class="navbar-logo">{logo_svg('mobile')}<span>Raw2Ready AI</span></div>
             <div class="nav-hamburger" id="navHamburger">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#F9A8D4"
                      stroke-width="2.2" stroke-linecap="round">
@@ -761,7 +725,7 @@ def _render_navbar():
 
         with left:
             st.markdown(
-                f'<div class="navbar-logo">{_logo_svg("desktop")}<span>Raw2Ready AI</span></div>',
+                f'<div class="navbar-logo">{logo_svg("desktop")}<span>Raw2Ready AI</span></div>',
                 unsafe_allow_html=True,
             )
 
@@ -892,7 +856,7 @@ def show_landing():
         f"""
         <div class="footer-wrap">
             <div class="footer-inner">
-                <div class="footer-brand-name">{_logo_svg('footer')}<span>Raw2Ready AI</span></div>
+                <div class="footer-brand-name">{logo_svg('footer')}<span>Raw2Ready AI</span></div>
                 <div class="footer-links">
                     <a href="#">Terms</a>
                     <div class="footer-divider"></div>

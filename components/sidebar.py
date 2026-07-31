@@ -3,6 +3,7 @@ import uuid
 import streamlit as st
 import streamlit.components.v1 as components
 
+from components.brand import logo_svg
 from utils.analysis.loader import load_dataset, SUPPORTED_EXTENSIONS
 from utils.persistence import delete_session
 
@@ -255,9 +256,12 @@ def sidebar():
     _inject_mobile_sidebar_js()
 
     st.sidebar.markdown(
-        """
-        <h2 class="gradient-text" style="margin-bottom:0;">🧠 AI Cleaner</h2>
-        <p style="color:#F4A8CB; font-size:13px; margin-top:-4px;">
+        f"""
+        <div style="display:flex; align-items:center; gap:10px;">
+            {logo_svg('sidebar', size=30)}
+            <h2 class="gradient-text" style="margin:0; font-size:20px;">Raw2Ready AI</h2>
+        </div>
+        <p style="color:#F4A8CB; font-size:13px; margin-top:6px;">
             AI Powered Data Cleaning Platform
         </p>
         """,
